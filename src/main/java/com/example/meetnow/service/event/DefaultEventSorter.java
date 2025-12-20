@@ -1,11 +1,13 @@
 package com.example.meetnow.service.event;
 
 import com.example.meetnow.service.event.calculator.FactorCalculatorStrategy;
+import com.example.meetnow.service.model.CalculationContext;
 import com.example.meetnow.service.model.PreviewEvent;
 import com.example.meetnow.service.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -26,8 +28,9 @@ public class DefaultEventSorter implements EventSorter {
     }
 
     private Double calculateWeight(User user, PreviewEvent event) {
+        CalculationContext context = CalculationContext.builder().user(user).event(event).dateTime(LocalDateTime.now()).build();
         return factorCalculators.stream()
-                .mapToDouble(calculator -> calculator.calculate(user, event))
+                .mapToDouble(calculator -> calculator.calculate(context))
                 .sum();
     }
 }

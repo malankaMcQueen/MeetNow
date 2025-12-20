@@ -2,9 +2,8 @@ package com.example.meetnow.service.event.calculator;
 
 import com.example.meetnow.configuration.ControlPointsProperties;
 import com.example.meetnow.configuration.ControlPointsProperties.ControlPoint;
+import com.example.meetnow.service.model.CalculationContext;
 import com.example.meetnow.service.model.GeoPoint;
-import com.example.meetnow.service.model.PreviewEvent;
-import com.example.meetnow.service.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +16,8 @@ public class DistanceFactorCalculatorStrategy implements FactorCalculatorStrateg
     private final ControlPointsProperties controlPointProperties;
 
     @Override
-    public Double calculate(User user, PreviewEvent event) {
-        double distance = calculateDistance(user.getCoordinates(), event.getCoordinates());
+    public Double calculate(CalculationContext context) {
+        double distance = calculateDistance(context.getUser().getCoordinates(), context.getEvent().getCoordinates());
 
         ControlPoint previousControlPoint = startControlPoint;
         for (ControlPoint point : controlPointProperties.getControlPoints()) {
