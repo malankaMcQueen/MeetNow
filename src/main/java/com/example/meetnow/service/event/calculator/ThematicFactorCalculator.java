@@ -4,12 +4,11 @@ import com.example.meetnow.service.model.CalculationContext;
 import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.PreviewEvent;
 import com.example.meetnow.service.model.User;
+import java.util.EnumSet;
 import org.springframework.stereotype.Service;
 
-import java.util.EnumSet;
-
 @Service
-public class ThematicFactorCalculatorStrategy implements FactorCalculatorStrategy {
+public class ThematicFactorCalculator implements FactorCalculatorStrategy {
 
     public static final double ZERO = 0.0;
 

@@ -9,5 +9,4 @@ class MeetNowApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

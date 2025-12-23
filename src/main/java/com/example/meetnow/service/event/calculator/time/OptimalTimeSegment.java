@@ -15,6 +15,7 @@ public class OptimalTimeSegment implements TimeSegmentCalculator {
     public boolean supports(double timeBeforeEvent) {
         return MINIMUM_HOURS <= timeBeforeEvent && timeBeforeEvent <= MAXIMUM_HOURS;
     }
+
     @Override
     public double calculate(double timeBeforeEvent) {
         return OPTIMAL_TIME_FACTOR;

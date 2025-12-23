@@ -1,14 +1,13 @@
 package com.example.meetnow.configuration;
 
 import jakarta.annotation.PostConstruct;
+import java.util.Comparator;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Comparator;
-import java.util.List;
 
 @Configuration
 @ConfigurationProperties(prefix = "control-points")
@@ -26,7 +25,6 @@ public class ControlPointsProperties {
         private double distance;
 
         private double value;
-
     }
 
     @PostConstruct
@@ -34,4 +32,3 @@ public class ControlPointsProperties {
         controlPoints = controlPoints.stream().sorted(Comparator.comparing(ControlPoint::getDistance)).toList();
     }
 }
-

@@ -1,9 +1,8 @@
 package com.example.meetnow.service.model;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Builder(toBuilder = true)
@@ -15,4 +14,3 @@ public class CalculationContext {
 
     private LocalDateTime dateTime;
 }
-

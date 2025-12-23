@@ -4,9 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Interest {
-    TENNIS(1, 10, "Tennis"),
-    FOOTBALL(2, 10, "Football"),
-    PAINTING(3, 20, "Painting");
+    TENNIS(1, 10, "Tennis"), FOOTBALL(2, 10, "Football"), PAINTING(3, 20, "Painting");
 
     private final int id;
     private final int categoryId;
@@ -17,5 +15,4 @@ public enum Interest {
         this.categoryId = categoryId;
         this.name = name;
     }
-
 }

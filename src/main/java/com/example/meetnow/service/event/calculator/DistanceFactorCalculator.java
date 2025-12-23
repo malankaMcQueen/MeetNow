@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DistanceFactorCalculatorStrategy implements FactorCalculatorStrategy {
+public class DistanceFactorCalculator implements FactorCalculatorStrategy {
 
     private static final ControlPoint startControlPoint = new ControlPoint(0.0, 1.0);
 
@@ -30,9 +30,8 @@ public class DistanceFactorCalculatorStrategy implements FactorCalculatorStrateg
         return previousControlPoint.getValue();
     }
 
-    private double calculateFactorValue(double distance,
-                                        ControlPoint previousControlPoint,
-                                        ControlPoint nextControlPoint) {
+    private double calculateFactorValue(double distance, ControlPoint previousControlPoint,
+            ControlPoint nextControlPoint) {
 
         double leftDistance = previousControlPoint.getDistance();
         double rightDistance = nextControlPoint.getDistance();
