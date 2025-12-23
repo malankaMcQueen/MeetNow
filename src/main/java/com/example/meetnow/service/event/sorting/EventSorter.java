@@ -1,4 +1,4 @@
-package com.example.meetnow.service.event.sorted;
+package com.example.meetnow.service.event.sorting;
 
 import com.example.meetnow.service.model.event.RankableEvent;
 import com.example.meetnow.service.model.User;

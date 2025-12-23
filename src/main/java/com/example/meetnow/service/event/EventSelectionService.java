@@ -2,7 +2,7 @@ package com.example.meetnow.service.event;
 
 import com.example.meetnow.api.mapper.EventPreviewMapper;
 import com.example.meetnow.repository.EventRepository;
-import com.example.meetnow.service.event.sorted.EventSorter;
+import com.example.meetnow.service.event.sorting.EventSorter;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
 import com.example.meetnow.service.model.event.RankableEvent;
 import com.example.meetnow.service.model.User;
@@ -23,7 +23,7 @@ public class EventSelectionService {
     private final UserService userService;
 
     public List<EventPreviewResponse> getEventsForUser(Long userId) {
-        List<RankableEvent> candidates = getEventListForUser(eventRepository);
+        List<RankableEvent> candidates = getEventListForUser();
         User user = userService.getUserById(userId);
 
         List<RankableEvent> sorted = sortEventsByRelevance(user, candidates);
@@ -31,7 +31,7 @@ public class EventSelectionService {
         return sorted.stream().map(EventPreviewMapper::fromRankableEvent).toList();
     }
 
-    private List<RankableEvent> getEventListForUser(EventRepository eventRepository) {
+    private List<RankableEvent> getEventListForUser() {
         return eventRepository.findAll();
     }
 
