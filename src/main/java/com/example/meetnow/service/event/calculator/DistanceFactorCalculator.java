@@ -20,11 +20,11 @@ public class DistanceFactorCalculator implements FactorCalculatorStrategy {
         double distance = calculateDistance(context.getUser().getCoordinates(), context.getEvent().getCoordinates());
 
         ControlPoint previousControlPoint = startControlPoint;
-        for (ControlPoint point : controlPointProperties.getControlPoints()) {
-            if (distance <= point.getDistance()) {
-                return calculateFactorValue(distance, previousControlPoint, point);
+        for (ControlPoint controlPoint : controlPointProperties.getControlPoints()) {
+            if (distance <= controlPoint.getDistance()) {
+                return calculateFactorValue(distance, previousControlPoint, controlPoint);
             }
-            previousControlPoint = point;
+            previousControlPoint = controlPoint;
         }
 
         return previousControlPoint.getValue();

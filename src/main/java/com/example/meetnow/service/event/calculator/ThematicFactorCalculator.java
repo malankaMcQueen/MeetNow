@@ -7,10 +7,10 @@ import com.example.meetnow.service.model.User;
 import java.util.EnumSet;
 import org.springframework.stereotype.Service;
 
+import static com.example.meetnow.service.constant.Constants.ZERO;
+
 @Service
 public class ThematicFactorCalculator implements FactorCalculatorStrategy {
-
-    public static final double ZERO = 0.0;
 
     @Override
     public Double calculate(CalculationContext context) {

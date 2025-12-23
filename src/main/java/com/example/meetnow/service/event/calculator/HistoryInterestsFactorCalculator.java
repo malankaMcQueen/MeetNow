@@ -16,6 +16,8 @@ import com.example.meetnow.service.model.event.RankableEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.example.meetnow.service.constant.Constants.ZERO;
+
 @Service
 @RequiredArgsConstructor
 public class HistoryInterestsFactorCalculator implements FactorCalculatorStrategy {
@@ -23,8 +25,6 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
     private final UserActionRepository actionRepository;
 
     private final EventRepository eventRepository;
-
-    private static final double ZERO = 0.0;
 
     // todo property
     private static final double DECAY_RATE = 0.05;
