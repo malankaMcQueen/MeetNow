@@ -1,7 +1,7 @@
 package com.example.meetnow.repository;
 
 import com.example.meetnow.service.event.calculator.EventDto;
-import com.example.meetnow.service.model.PreviewEvent;
+import com.example.meetnow.service.model.event.RankableEvent;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Set;
 public class JdbiEventRepository implements EventRepository {
 
     @Override
-    public List<PreviewEvent> findAll() {
+    public List<RankableEvent> findAll() {
         return List.of();
     }
 

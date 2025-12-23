@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.example.meetnow.service.model.event.RankableEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,7 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
     @Override
     public Double calculate(CalculationContext context) {
         User user = context.getUser();
-        PreviewEvent event = context.getEvent();
+        RankableEvent event = context.getEvent();
         Set<Interest> eventInterests = event.getInterests();
 
         Set<UserAction> userActions = actionRepository.findAllByUserId(user.getId());

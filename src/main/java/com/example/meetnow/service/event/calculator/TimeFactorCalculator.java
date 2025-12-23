@@ -4,7 +4,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 
 import com.example.meetnow.service.event.calculator.time.TimeSegmentCalculator;
 import com.example.meetnow.service.model.CalculationContext;
-import com.example.meetnow.service.model.PreviewEvent;
+import com.example.meetnow.service.model.event.RankableEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class TimeFactorCalculator implements FactorCalculatorStrategy {
 
     @Override
     public Double calculate(CalculationContext context) {
-        PreviewEvent event = context.getEvent();
+        RankableEvent event = context.getEvent();
 
         double hoursToEvent = getHoursToEvent(event.getStartTime(), context.getDateTime());
 

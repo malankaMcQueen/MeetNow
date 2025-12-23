@@ -2,7 +2,7 @@ package com.example.meetnow.service.event.calculator;
 
 import com.example.meetnow.service.model.CalculationContext;
 import com.example.meetnow.service.model.Interest;
-import com.example.meetnow.service.model.PreviewEvent;
+import com.example.meetnow.service.model.event.RankableEvent;
 import com.example.meetnow.service.model.User;
 import java.util.EnumSet;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class ThematicFactorCalculator implements FactorCalculatorStrategy {
     @Override
     public Double calculate(CalculationContext context) {
         User user = context.getUser();
-        PreviewEvent event = context.getEvent();
+        RankableEvent event = context.getEvent();
 
         if (event.getInterests() == null || event.getInterests().isEmpty()) {
             return ZERO;

@@ -1,6 +1,8 @@
 package com.example.meetnow.service.model;
 
 import java.time.LocalDateTime;
+
+import com.example.meetnow.service.model.event.RankableEvent;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +12,7 @@ public class CalculationContext {
 
     private User user;
 
-    private PreviewEvent event;
+    private RankableEvent event;
 
     private LocalDateTime dateTime;
 }
