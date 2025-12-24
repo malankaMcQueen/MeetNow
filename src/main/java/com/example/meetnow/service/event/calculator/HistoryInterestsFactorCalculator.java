@@ -1,5 +1,6 @@
 package com.example.meetnow.service.event.calculator;
 
+import com.example.meetnow.configuration.EventSortingProperties;
 import com.example.meetnow.repository.EventRepository;
 import com.example.meetnow.repository.UserActionRepository;
 import com.example.meetnow.service.model.*;
@@ -9,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.example.meetnow.service.model.event.RankableEvent;
@@ -26,17 +26,15 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
 
     private final EventRepository eventRepository;
 
-    // todo property
-    private static final double DECAY_RATE = 0.05;
+    private final EventSortingProperties eventSortingProperties;
 
-    // todo починить все возможные NPE
     @Override
     public Double calculate(CalculationContext context) {
-        User user = context.getUser();
+        UserContext userContext = context.getUserContext();
         RankableEvent event = context.getEvent();
         Set<Interest> eventInterests = event.getInterests();
 
-        Set<UserAction> userActions = actionRepository.findAllByUserId(user.getId());
+        Set<UserAction> userActions = actionRepository.findAllByUserId(userContext.getId());
 
         Map<Interest, Double> userInterestProfile = aggregateUserInterestWeights(userActions, context);
 
@@ -59,15 +57,15 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
     private Map<Interest, Double> aggregateUserInterestWeights(Set<UserAction> userActions,
             CalculationContext context) {
         Map<Interest, Double> interestProfile = new HashMap<>();
-        Map<Long, EventDto> eventDtoMap = getEventDtoMap(userActions);
+        Map<Long, List<Interest>> interestByEventIdMap = getInterestByEventMap(userActions);
 
         for (UserAction action : userActions) {
-            EventDto eventDto = eventDtoMap.get(action.getEventId());
+            List<Interest> interests = interestByEventIdMap.getOrDefault(action.getEventId(), List.of());
 
             double weightDecay = calculateDecay(action.getActionTime(), context.getDateTime());
             double actionContribution = weightDecay * action.getActionType().getWeight();
 
-            eventDto.getInterestList().forEach(interest -> {
+            interests.forEach(interest -> {
                 Double weight = interestProfile.getOrDefault(interest, ZERO);
                 weight += actionContribution;
                 interestProfile.put(interest, weight);
@@ -77,17 +75,17 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
         return interestProfile;
     }
 
-    private Map<Long, EventDto> getEventDtoMap(Set<UserAction> userActions) {
-        return eventRepository.findAllByIds(getEventIds(userActions)).stream()
-                .collect(Collectors.toMap(EventDto::getId, Function.identity()));
+    private Map<Long, List<Interest>> getInterestByEventMap(Set<UserAction> userActions) {
+        Set<Long> eventIds = userActions.stream()
+                .map(UserAction::getEventId)
+                .collect(Collectors.toSet());
+
+        return eventRepository.findInterestsByEventIds(eventIds);
     }
 
     private double calculateDecay(LocalDateTime startTime, LocalDateTime endTime) {
         double deltaDays = ChronoUnit.HOURS.between(startTime, endTime) / 24.0;
-        return Math.exp(-DECAY_RATE * deltaDays);
+        return Math.exp(-eventSortingProperties.getDecayRateForHistoryInterests() * deltaDays);
     }
 
-    private static List<Long> getEventIds(Set<UserAction> userActions) {
-        return userActions.stream().map(UserAction::getEventId).distinct().toList();
-    }
 }

@@ -1,7 +1,7 @@
 package com.example.meetnow.service.user;
 
 import com.example.meetnow.repository.UserRepository;
-import com.example.meetnow.service.model.User;
+import com.example.meetnow.service.model.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User getUserById(Long userId) {
+    public UserContext getUserContextById(Long userId) {
         userRepository.findById(userId);
         return null;
     }

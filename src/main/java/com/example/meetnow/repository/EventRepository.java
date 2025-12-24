@@ -1,8 +1,10 @@
 package com.example.meetnow.repository;
 
 import com.example.meetnow.service.event.calculator.EventDto;
+import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.event.RankableEvent;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface EventRepository {
@@ -10,4 +12,9 @@ public interface EventRepository {
     List<RankableEvent> findAll();
 
     Set<EventDto> findAllByIds(List<Long> eventIds);
+
+    List<Interest> findInterestsByEventId(Long eventId);
+
+    Map<Long, List<Interest>> findInterestsByEventIds(Set<Long> eventIds);
+
 }

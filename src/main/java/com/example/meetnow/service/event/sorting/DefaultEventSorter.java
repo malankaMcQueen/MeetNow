@@ -3,7 +3,7 @@ package com.example.meetnow.service.event.sorting;
 import com.example.meetnow.service.event.calculator.FactorCalculatorStrategy;
 import com.example.meetnow.service.model.CalculationContext;
 import com.example.meetnow.service.model.event.RankableEvent;
-import com.example.meetnow.service.model.User;
+import com.example.meetnow.service.model.UserContext;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -17,10 +17,10 @@ public class DefaultEventSorter implements EventSorter {
     private final List<FactorCalculatorStrategy> factorCalculators;
 
     @Override
-    public List<RankableEvent> sort(User user, List<RankableEvent> events) {
+    public List<RankableEvent> sort(UserContext userContext, List<RankableEvent> events) {
         CalculationContext.CalculationContextBuilder contextBuilder = CalculationContext
                 .builder()
-                .user(user)
+                .userContext(userContext)
                 .dateTime(LocalDateTime.now());
 
         List<ScoredEvent> scoredEvents = events.stream()

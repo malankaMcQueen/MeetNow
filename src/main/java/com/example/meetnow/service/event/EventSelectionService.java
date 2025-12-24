@@ -3,9 +3,10 @@ package com.example.meetnow.service.event;
 import com.example.meetnow.api.mapper.EventPreviewMapper;
 import com.example.meetnow.repository.EventRepository;
 import com.example.meetnow.service.event.sorting.EventSorter;
+import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
 import com.example.meetnow.service.model.event.RankableEvent;
-import com.example.meetnow.service.model.User;
+import com.example.meetnow.service.model.UserContext;
 import java.util.List;
 
 import com.example.meetnow.service.user.UserService;
@@ -22,11 +23,14 @@ public class EventSelectionService {
 
     private final UserService userService;
 
-    public List<EventPreviewResponse> getEventsForUser(Long userId) {
+    public List<EventPreviewResponse> getEventsForUser(Long userId, GeoPoint userCoordinates) {
         List<RankableEvent> candidates = getEventListForUser();
-        User user = userService.getUserById(userId);
+        UserContext userContext = userService.getUserContextById(userId)
+                .toBuilder()
+                .coordinates(userCoordinates)
+                .build();
 
-        List<RankableEvent> sorted = sortEventsByRelevance(user, candidates);
+        List<RankableEvent> sorted = sortEventsByRelevance(userContext, candidates);
 
         return sorted.stream().map(EventPreviewMapper::fromRankableEvent).toList();
     }
@@ -35,7 +39,7 @@ public class EventSelectionService {
         return eventRepository.findAll();
     }
 
-    private List<RankableEvent> sortEventsByRelevance(User user, List<RankableEvent> events) {
-        return eventSorter.sort(user, events);
+    private List<RankableEvent> sortEventsByRelevance(UserContext userContext, List<RankableEvent> events) {
+        return eventSorter.sort(userContext, events);
     }
 }

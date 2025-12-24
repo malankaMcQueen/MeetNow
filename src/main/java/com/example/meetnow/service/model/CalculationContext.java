@@ -10,7 +10,7 @@ import lombok.Getter;
 @Builder(toBuilder = true)
 public class CalculationContext {
 
-    private User user;
+    private UserContext userContext;
 
     private RankableEvent event;
 

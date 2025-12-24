@@ -13,7 +13,6 @@ import lombok.Value;
 public class RankableEvent {
 
     Long id;
-    Double weight;
     GeoPoint coordinates;
     LocalDateTime startTime;
     Set<Interest> interests;

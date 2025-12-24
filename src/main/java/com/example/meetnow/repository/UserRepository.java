@@ -1,10 +1,10 @@
 package com.example.meetnow.repository;
 
-import com.example.meetnow.service.model.User;
+import com.example.meetnow.service.model.UserContext;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository {
 
-    User findById(Long userId);
+    UserContext findById(Long userId);
 }
