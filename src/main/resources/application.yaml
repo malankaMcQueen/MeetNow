@@ -2,6 +2,12 @@ spring:
   application:
     name: MeetNow
 
+  datasource:
+    url:
+    username: qwe
+    password: qwe
+    driver-class-name: org.postgresql.Driver
+
 app:
   event-sorting:
     distance-control-points:
@@ -18,4 +24,5 @@ app:
       - distance: 25.0
         value: 0.0
     decay-rate-for-history-interests: 0.05
+
 

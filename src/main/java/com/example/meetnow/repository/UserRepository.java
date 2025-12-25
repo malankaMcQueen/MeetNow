@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository {
 
-    UserContext findById(Long userId);
+    UserContext getUserContextById(Long userId);
 }

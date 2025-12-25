@@ -12,7 +12,6 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserContext getUserContextById(Long userId) {
-        userRepository.findById(userId);
-        return null;
+        return userRepository.getUserContextById(userId);
     }
 }
