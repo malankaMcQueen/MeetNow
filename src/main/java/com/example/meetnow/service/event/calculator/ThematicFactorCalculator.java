@@ -5,6 +5,8 @@ import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.event.RankableEvent;
 import com.example.meetnow.service.model.UserContext;
 import java.util.EnumSet;
+import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
 import static com.example.meetnow.service.constant.Constants.ZERO;
@@ -21,7 +23,8 @@ public class ThematicFactorCalculator implements FactorCalculatorStrategy {
             return ZERO;
         }
 
-        EnumSet<Interest> intersectionsUserAndEventInterests = EnumSet.copyOf(userContext.getInterests());
+        // todo check set repair
+        Set<Interest> intersectionsUserAndEventInterests = userContext.getInterests();
         // Оставляет только одинаковые элементы
         intersectionsUserAndEventInterests.retainAll(event.getInterests());
 

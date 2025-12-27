@@ -25,9 +25,7 @@ public class EventSelectionService {
 
     public List<EventPreviewResponse> getEventsForUser(Long userId, GeoPoint userCoordinates) {
         List<RankableEvent> candidates = getEventListForUser();
-        UserContext userContext = userService.getUserContextById(userId)
-                .toBuilder()
-                .coordinates(userCoordinates)
+        UserContext userContext = userService.getUserContextById(userId).toBuilder().coordinates(userCoordinates)
                 .build();
 
         List<RankableEvent> sorted = sortEventsByRelevance(userContext, candidates);
@@ -36,7 +34,7 @@ public class EventSelectionService {
     }
 
     private List<RankableEvent> getEventListForUser() {
-        return eventRepository.findAll();
+        return eventRepository.findAllRankableEvents();
     }
 
     private List<RankableEvent> sortEventsByRelevance(UserContext userContext, List<RankableEvent> events) {

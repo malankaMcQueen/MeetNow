@@ -18,10 +18,8 @@ public class DefaultEventSorter implements EventSorter {
 
     @Override
     public List<RankableEvent> sort(UserContext userContext, List<RankableEvent> events) {
-        CalculationContext.CalculationContextBuilder contextBuilder = CalculationContext
-                .builder()
-                .userContext(userContext)
-                .dateTime(LocalDateTime.now());
+        CalculationContext.CalculationContextBuilder contextBuilder = CalculationContext.builder()
+                .userContext(userContext).dateTime(LocalDateTime.now());
 
         List<ScoredEvent> scoredEvents = events.stream()
                 .map(event -> new ScoredEvent(event, calculateScore(contextBuilder, event)))
@@ -33,9 +31,6 @@ public class DefaultEventSorter implements EventSorter {
     private double calculateScore(CalculationContext.CalculationContextBuilder contextBuilder, RankableEvent event) {
         CalculationContext context = contextBuilder.event(event).build();
 
-        return factorCalculators
-                .stream()
-                .mapToDouble(calculator -> calculator.calculate(context))
-                .sum();
+        return factorCalculators.stream().mapToDouble(calculator -> calculator.calculate(context)).sum();
     }
 }

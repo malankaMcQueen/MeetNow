@@ -18,7 +18,7 @@ public class EventController {
 
     @GetMapping("/recommendations/{userId}")
     public List<EventPreviewResponse> getEventListForUser(@PathVariable Long userId,
-                                                          @RequestBody GeoPoint userCoordinates) {
+            @RequestBody GeoPoint userCoordinates) {
         return eventSelectionService.getEventsForUser(userId, userCoordinates);
     }
 

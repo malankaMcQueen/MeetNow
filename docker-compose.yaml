@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: meet_now_db
+    environment:
+      POSTGRES_DB: meet_now
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - meet_now_service_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  meet_now_service_postgres_data:

@@ -17,7 +17,8 @@ public class DistanceFactorCalculator implements FactorCalculatorStrategy {
 
     @Override
     public Double calculate(CalculationContext context) {
-        double distance = calculateDistance(context.getUserContext().getCoordinates(), context.getEvent().getCoordinates());
+        double distance = calculateDistance(context.getUserContext().getCoordinates(),
+                context.getEvent().getCoordinates());
 
         ControlPoint previousControlPoint = startControlPoint;
         for (ControlPoint controlPoint : controlPointProperties.getDistanceControlPoints()) {

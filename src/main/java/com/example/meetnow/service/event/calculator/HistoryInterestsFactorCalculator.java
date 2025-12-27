@@ -76,9 +76,7 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
     }
 
     private Map<Long, List<Interest>> getInterestByEventMap(Set<UserAction> userActions) {
-        Set<Long> eventIds = userActions.stream()
-                .map(UserAction::getEventId)
-                .collect(Collectors.toSet());
+        Set<Long> eventIds = userActions.stream().map(UserAction::getEventId).collect(Collectors.toSet());
 
         return eventRepository.findInterestsByEventIds(eventIds);
     }

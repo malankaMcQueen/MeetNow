@@ -5,15 +5,11 @@ import com.example.meetnow.service.model.event.RankableEvent;
 
 public final class EventPreviewMapper {
 
-    private EventPreviewMapper() {}
+    private EventPreviewMapper() {
+    }
 
     public static EventPreviewResponse fromRankableEvent(RankableEvent event) {
-        return EventPreviewResponse.builder()
-                .id(event.getId())
-                .weight(event.getWeight())
-                .coordinates(event.getCoordinates())
-                .startTime(event.getStartTime())
-                .interests(event.getInterests())
-                .build();
+        return EventPreviewResponse.builder().id(event.getId()).coordinates(event.getCoordinates())
+                .startTime(event.getStartTime()).interests(event.getInterests()).build();
     }
 }
