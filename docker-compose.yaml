@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17.0
     container_name: meet_now_db
     environment:
       POSTGRES_DB: meet_now

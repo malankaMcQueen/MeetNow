@@ -9,10 +9,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static com.example.meetnow.repository.mapper.ColumnNames.*;
+import static com.example.meetnow.repository.mapper.MapperUtil.extractInterest;
 
 public class RankableEventReducer implements RowReducer<Map<Long, RankableEvent>, RankableEvent> {
 
@@ -31,18 +33,18 @@ public class RankableEventReducer implements RowReducer<Map<Long, RankableEvent>
                     rowView.getColumn(LONGITUDE, Double.class));
 
             Set<Interest> interests = new HashSet<>();
-            Long interestId = rowView.getColumn(INTEREST_ID, Long.class);
-            if (interestId != null)
-                interests.add(new Interest(interestId, "", null));
+
+            Optional<Interest> interest = extractInterest(rowView);
+            interest.ifPresent(interests::add);
 
             event = RankableEvent.builder().id(eventId).coordinates(coordinates)
                     .startTime(rowView.getColumn(START_TIME, LocalDateTime.class)).interests(interests).build();
 
             container.put(eventId, event);
         } else {
-            Long interestId = rowView.getColumn(INTEREST_ID, Long.class);
-            if (interestId != null)
-                event.getInterests().add(new Interest(interestId, "", null));
+            Optional<Interest> interest = extractInterest(rowView);
+            if (interest.isPresent())
+                event.getInterests().add(interest.get());
         }
     }
 

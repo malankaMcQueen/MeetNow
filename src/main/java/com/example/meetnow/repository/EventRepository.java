@@ -1,23 +1,22 @@
 package com.example.meetnow.repository;
 
-import com.example.meetnow.repository.mapper.InterestMapReducer;
+import com.example.meetnow.repository.mapper.EventInterestRow;
 import com.example.meetnow.repository.mapper.RankableEventReducer;
-import com.example.meetnow.service.event.calculator.EventDto;
 import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.event.RankableEvent;
-import org.jdbi.v3.sqlobject.config.KeyColumn;
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
-import org.jdbi.v3.sqlobject.config.RegisterCollector;
+import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.UseRowReducer;
+import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Repository
+@RegisterConstructorMapper(EventInterestRow.class)
 public interface EventRepository {
 
     @SqlQuery("""
@@ -34,26 +33,23 @@ public interface EventRepository {
     @UseRowReducer(RankableEventReducer.class)
     List<RankableEvent> findAllRankableEvents();
 
-    Set<EventDto> findAllByIds(List<Long> eventIds);
-
-    List<Interest> findInterestsByEventId(Long eventId);
-
     @SqlQuery("""
                 SELECT
                     e.id AS event_id,
                     i.id AS interest_id,
                     i.name AS interest_name,
-                    i.category_id AS category_id
+                    i.category_id AS interest_category_id
                 FROM event e
                 LEFT JOIN event_interest ei ON e.id = ei.event_id
                 LEFT JOIN interest i ON i.id = ei.interest_id
                 WHERE e.id IN (<eventIds>)
             """)
-    @UseRowReducer(InterestMapReducer.class)
-    Map<Long, List<Interest>> findInterestsByEventIds(@BindList Set<Long> eventIds);
+    Set<EventInterestRow> findInterestsByEventIdsInList(@BindList Set<Long> eventIds);
 
-    @SqlQuery("SELECT event_id, id, title FROM interests WHERE event_id IN (<eventIds>)")
-    @RegisterBeanMapper(Interest.class)
-    List<Interest> _findInterestsInternal(@BindList("eventIds") Set<Long> eventIds);
+    default Map<Long, List<Interest>> findInterestsByEventIds(Set<Long> eventIds) {
+        return findInterestsByEventIdsInList(eventIds).stream().filter(row -> row.interest() != null)
+                .collect(Collectors.groupingBy(EventInterestRow::eventId,
+                        Collectors.mapping(EventInterestRow::interest, Collectors.toList())));
+    }
 
 }

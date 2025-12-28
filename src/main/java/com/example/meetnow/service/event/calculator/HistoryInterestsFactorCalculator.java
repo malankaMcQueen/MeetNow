@@ -3,7 +3,14 @@ package com.example.meetnow.service.event.calculator;
 import com.example.meetnow.configuration.EventSortingProperties;
 import com.example.meetnow.repository.EventRepository;
 import com.example.meetnow.repository.UserActionRepository;
-import com.example.meetnow.service.model.*;
+import com.example.meetnow.service.model.CalculationContext;
+import com.example.meetnow.service.model.Interest;
+import com.example.meetnow.service.model.UserAction;
+import com.example.meetnow.service.model.UserContext;
+import com.example.meetnow.service.model.event.RankableEvent;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -11,10 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.example.meetnow.service.model.event.RankableEvent;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import static com.example.meetnow.service.constant.Constants.ZERO;
 
@@ -60,10 +63,10 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
         Map<Long, List<Interest>> interestByEventIdMap = getInterestByEventMap(userActions);
 
         for (UserAction action : userActions) {
-            List<Interest> interests = interestByEventIdMap.getOrDefault(action.getEventId(), List.of());
+            List<Interest> interests = interestByEventIdMap.getOrDefault(action.eventId(), List.of());
 
-            double weightDecay = calculateDecay(action.getActionTime(), context.getDateTime());
-            double actionContribution = weightDecay * action.getActionType().getWeight();
+            double weightDecay = calculateDecay(action.actionTime(), context.getDateTime());
+            double actionContribution = weightDecay * action.actionType().getWeight();
 
             interests.forEach(interest -> {
                 Double weight = interestProfile.getOrDefault(interest, ZERO);
@@ -76,7 +79,7 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
     }
 
     private Map<Long, List<Interest>> getInterestByEventMap(Set<UserAction> userActions) {
-        Set<Long> eventIds = userActions.stream().map(UserAction::getEventId).collect(Collectors.toSet());
+        Set<Long> eventIds = userActions.stream().map(UserAction::eventId).collect(Collectors.toSet());
 
         return eventRepository.findInterestsByEventIds(eventIds);
     }
