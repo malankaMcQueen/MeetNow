@@ -3,6 +3,7 @@ package com.example.meetnow.repository;
 import com.example.meetnow.repository.mapper.EventInterestRow;
 import com.example.meetnow.repository.mapper.RankableEventReducer;
 import com.example.meetnow.service.model.Interest;
+import com.example.meetnow.service.model.event.Event;
 import com.example.meetnow.service.model.event.RankableEvent;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindList;
@@ -52,4 +53,7 @@ public interface EventRepository {
                         Collectors.mapping(EventInterestRow::interest, Collectors.toList())));
     }
 
+    Event save(Event event);
+
+    Event findById(Long eventId);
 }

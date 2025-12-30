@@ -1,11 +1,19 @@
 package com.example.meetnow.api;
 
-import com.example.meetnow.service.event.EventSelectionService;
+import com.example.meetnow.service.event.EventService;
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.event.Event;
+import com.example.meetnow.service.model.event.EventCreateRequest;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
+import com.example.meetnow.service.model.event.EventUpdateRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -14,17 +22,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventController {
 
-    private final EventSelectionService eventSelectionService;
+    private final EventService eventService;
 
     @GetMapping("/recommendations/{userId}")
     public List<EventPreviewResponse> getEventListForUser(@PathVariable Long userId,
             @RequestBody GeoPoint userCoordinates) {
-        return eventSelectionService.getEventsForUser(userId, userCoordinates);
+        return eventService.getEventsForUser(userId, userCoordinates);
     }
 
     @PostMapping
-    public Event createEvent(Event event) {
-        return null;
+    public Event createEvent(EventCreateRequest eventCreateRequest) {
+        return eventService.createEvent(eventCreateRequest);
+    }
+
+    @PutMapping("/{eventId}")
+    public Event updateEvent(@PathVariable Long eventId, EventUpdateRequest eventUpdateRequest) {
+        return eventService.updateEvent(eventId, eventUpdateRequest);
     }
 
     @GetMapping("/{eventId}")
