@@ -1,16 +1,30 @@
 package com.example.meetnow.service.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Immutable;
 
+@Immutable
+@Entity
+@Table(name = "interest")
 @Getter
-@AllArgsConstructor
-@Builder(toBuilder = true)
-@EqualsAndHashCode
+@NoArgsConstructor(force = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Interest {
+
+    @Id
+    @Column(name = "id")
     private final Long id;
+
+    @Column(name = "name")
+    @EqualsAndHashCode.Include
     private final String name;
+
+    @Column(name = "category_id")
     private final Long categoryId;
 }
