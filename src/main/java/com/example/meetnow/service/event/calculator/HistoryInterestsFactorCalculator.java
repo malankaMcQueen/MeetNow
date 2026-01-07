@@ -63,10 +63,10 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
         Map<Long, List<Interest>> interestByEventIdMap = getInterestByEventMap(userActions);
 
         for (UserAction action : userActions) {
-            List<Interest> interests = interestByEventIdMap.getOrDefault(action.eventId(), List.of());
+            List<Interest> interests = interestByEventIdMap.getOrDefault(action.getEventId(), List.of());
 
-            double weightDecay = calculateDecay(action.actionTime(), context.getDateTime());
-            double actionContribution = weightDecay * action.actionType().getWeight();
+            double weightDecay = calculateDecay(action.getActionTime(), context.getDateTime());
+            double actionContribution = weightDecay * action.getActionType().getWeight();
 
             interests.forEach(interest -> {
                 Double weight = interestProfile.getOrDefault(interest, ZERO);
@@ -79,7 +79,7 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
     }
 
     private Map<Long, List<Interest>> getInterestByEventMap(Set<UserAction> userActions) {
-        Set<Long> eventIds = userActions.stream().map(UserAction::eventId).collect(Collectors.toSet());
+        Set<Long> eventIds = userActions.stream().map(UserAction::getEventId).collect(Collectors.toSet());
 
         return eventRepository.findInterestsByEventIds(eventIds);
     }
