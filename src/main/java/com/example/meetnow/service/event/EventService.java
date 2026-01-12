@@ -9,6 +9,7 @@ import com.example.meetnow.service.model.event.EventUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class EventService {
     }
 
     public Event updateEvent(Long eventId, EventUpdateRequest eventUpdateRequest) {
-        Event event = eventRepository.findById(eventId);
+        Event event = eventRepository.findById(eventId).orElseThrow(()
+                -> new RuntimeException("Event with id: " + eventId + "not found" ));
         // todo Проверка прав на то может ли он менять и существует ли
         event = event.toBuilder()
                 .startTime(eventUpdateRequest.getStartTime())
