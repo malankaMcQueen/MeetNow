@@ -1,10 +1,16 @@
 package com.example.meetnow.service.user;
 
+import com.example.meetnow.repository.InterestRepository;
 import com.example.meetnow.repository.UserRepository;
+import com.example.meetnow.repository.projection.UserContextProjection;
+import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.User;
 import com.example.meetnow.service.model.UserContext;
+import com.example.meetnow.service.model.user.UserCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -12,11 +18,32 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final InterestRepository interestRepository;
+
     public UserContext getUserContextById(Long userId) {
-        return userRepository.getUserContextById(userId);
+        UserContextProjection userContextProjection = userRepository.findUserContextById(userId).orElseThrow(()
+                -> new RuntimeException("User Projection not found"));
+        return UserContext.builder()
+                .id(userContextProjection.getId())
+                .interests(userContextProjection.getInterests())
+                .build();
     }
 
-    public User create(User user) {
-        return userRepository.insert(user);
+    public User create(UserCreateRequest createRequest) {
+        User.UserBuilder userBuilder = User.builder();
+        if (createRequest.getInterestIds() != null && !createRequest.getInterestIds().isEmpty()) {
+            List<Interest> interestList = interestRepository.findAllById(createRequest.getInterestIds());
+            userBuilder.interests(interestList);
+        }
+        return userRepository.save(userBuilder.build());
+    }
+
+    public User update(UserUpdateRequest updateRequest) {
+        List<Interest> interestList = interestRepository.findAllById(updateRequest.getInterestIds());
+        User user = userRepository.findById(updateRequest.getId()).orElseThrow(()
+                -> new RuntimeException("User not found id: " + updateRequest.getId()));
+        user.setInterests(interestList);
+        userRepository.save(user);
+        return user;
     }
 }

@@ -8,6 +8,9 @@ spring:
     password: qwe
     driver-class-name: org.postgresql.Driver
 
+  jpa:
+    openInView: false
+
 app:
   event-sorting:
     distance-control-points:

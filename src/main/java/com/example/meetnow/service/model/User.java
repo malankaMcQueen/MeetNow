@@ -10,19 +10,23 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.Value;
+import lombok.*;
 
 import java.util.List;
 
-@Value
 @Entity
 @Table(name = "user_profile")
+@Setter
+@Getter
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    Long id;
+    private Long id;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -30,6 +34,6 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "interest_id")
     )
-    List<Interest> interests;
+    private List<Interest> interests;
 
 }

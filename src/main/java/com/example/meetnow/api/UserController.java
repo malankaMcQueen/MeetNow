@@ -1,12 +1,11 @@
 package com.example.meetnow.api;
 
 import com.example.meetnow.service.model.User;
+import com.example.meetnow.service.model.user.UserCreateRequest;
 import com.example.meetnow.service.user.UserService;
+import com.example.meetnow.service.user.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -16,12 +15,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User createUser(User user) {
-        return userService.create(user);
+    public User createUser(@RequestBody UserCreateRequest createRequest) {
+        return userService.create(createRequest);
     }
 
     @PutMapping
-    public User updateUser(User user) {
-        return userService.create(user);
+    public User updateUser(@RequestBody UserUpdateRequest updateRequest) {
+        return userService.update(updateRequest);
     }
 }

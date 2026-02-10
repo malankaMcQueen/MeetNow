@@ -9,8 +9,8 @@ CREATE TABLE category (
 
 CREATE TABLE interest (
       id          SERIAL PRIMARY KEY,
-      category_id INT NOT NULL REFERENCES category(id),
-      name        VARCHAR NOT NULL
+      name        VARCHAR NOT NULL,
+      category_id INT NOT NULL REFERENCES category(id)
 );
 
 CREATE TABLE user_interest (

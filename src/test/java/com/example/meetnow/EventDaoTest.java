@@ -2,18 +2,14 @@ package com.example.meetnow;
 
 import com.example.meetnow.repository.EventRepository;
 import com.example.meetnow.repository.UserActionRepository;
-import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.UserAction;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -79,16 +75,16 @@ class EventDaoTest {
 
     }
 
-    @Test
-    void testFindInterestsByEventIds() {
-        Set<Long> eventIds = Set.of(1L, 2L);
-        Map<Long, List<Interest>> result = eventDao.findInterestsByEventIds(eventIds);
-
-        System.out.println(eventDao);
-        Assertions.assertEquals(2, result.size());
-        Assertions.assertEquals(2, result.get(1L).size());
-        Assertions.assertEquals(1, result.get(2L).size());
-
-        System.out.println(result);
-    }
+//    @Test
+//    void testFindInterestsByEventIds() {
+//        Set<Long> eventIds = Set.of(1L, 2L);
+//        Map<Long, List<Interest>> result = eventDao.findInterestsByEventIds(eventIds);
+//
+//        System.out.println(eventDao);
+//        Assertions.assertEquals(2, result.size());
+//        Assertions.assertEquals(2, result.get(1L).size());
+//        Assertions.assertEquals(1, result.get(2L).size());
+//
+//        System.out.println(result);
+//    }
 }

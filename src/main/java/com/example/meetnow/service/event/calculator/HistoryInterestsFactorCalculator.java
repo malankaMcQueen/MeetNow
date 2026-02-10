@@ -3,6 +3,7 @@ package com.example.meetnow.service.event.calculator;
 import com.example.meetnow.configuration.EventSortingProperties;
 import com.example.meetnow.repository.EventRepository;
 import com.example.meetnow.repository.UserActionRepository;
+import com.example.meetnow.repository.projection.EventInterestProjection;
 import com.example.meetnow.service.model.CalculationContext;
 import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.UserAction;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.meetnow.service.constant.Constants.ZERO;
@@ -78,10 +76,38 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
         return interestProfile;
     }
 
-    private Map<Long, List<Interest>> getInterestByEventMap(Set<UserAction> userActions) {
-        Set<Long> eventIds = userActions.stream().map(UserAction::getEventId).collect(Collectors.toSet());
+    public Map<Long, List<Interest>> getInterestByEventMap(Set<UserAction> userActions) {
+        Set<Long> eventIds = extractEventIds(userActions);
 
-        return eventRepository.findInterestsByEventIds(eventIds);
+        if (eventIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return eventRepository.findInterestsByEventIds(eventIds)
+                .stream()
+                .filter(projection -> projection.getEventId() != null)
+                .collect(Collectors.groupingBy(
+                        EventInterestProjection::getEventId,
+                        Collectors.mapping(
+                                projection -> mapToInterest(projection.getInterest()),
+                                Collectors.filtering(
+                                        Objects::nonNull,
+                                        Collectors.toList()
+                                )
+                        )
+                ));
+    }
+
+    private Interest mapToInterest(EventInterestProjection.InterestProjection projection) {
+        if (projection == null) return null;
+        return new Interest(projection.getId(), projection.getName(), projection.getCategoryId());
+    }
+
+    private Set<Long> extractEventIds(Set<UserAction> userActions) {
+        return userActions.stream()
+                .map(UserAction::getEventId) // Предположим, есть прямой метод getEventId()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     private double calculateDecay(LocalDateTime startTime, LocalDateTime endTime) {

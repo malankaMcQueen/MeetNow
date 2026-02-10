@@ -2,6 +2,7 @@ package com.example.meetnow.service.event;
 
 import com.example.meetnow.api.mapper.EventPreviewMapper;
 import com.example.meetnow.repository.EventRepository;
+import com.example.meetnow.repository.projection.RankableEventProjection;
 import com.example.meetnow.service.event.sorting.EventSorter;
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
@@ -34,7 +35,7 @@ public class EventSelectionService {
     }
 
     private List<RankableEvent> getEventListForUser() {
-        return eventRepository.findAllRankableEvents();
+        return eventRepository.findAllRankableEvents().stream().map(RankableEventProjection::toRankableEvent).toList();
     }
 
     private List<RankableEvent> sortEventsByRelevance(UserContext userContext, List<RankableEvent> events) {
