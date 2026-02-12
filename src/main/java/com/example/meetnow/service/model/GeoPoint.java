@@ -6,23 +6,26 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Value;
+import lombok.*;
 
 @Entity
 @Table(name = "geo_point")
-@Value
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // для JPA
+@Builder(toBuilder = true)
 public class GeoPoint {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    Long id;
+    private Long id;
 
     @Column(name = "latitude")
-    Double latitude;
+    private Double latitude;
 
     @Column(name = "longitude")
-    Double longitude;
+    private Double longitude;
 
     // todo check function
     public static double distanceKm(GeoPoint a, GeoPoint b) {

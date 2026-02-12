@@ -3,6 +3,7 @@ package com.example.meetnow.service.user;
 import com.example.meetnow.repository.InterestRepository;
 import com.example.meetnow.repository.UserRepository;
 import com.example.meetnow.repository.projection.UserContextProjection;
+import com.example.meetnow.service.interest.InterestService;
 import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.User;
 import com.example.meetnow.service.model.UserContext;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -18,11 +20,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final InterestRepository interestRepository;
+    private final InterestService interestService;
 
     public UserContext getUserContextById(Long userId) {
         UserContextProjection userContextProjection = userRepository.findUserContextById(userId).orElseThrow(()
-                -> new RuntimeException("User Projection not found"));
+                -> new RuntimeException("User not found id:" + userId));
         return UserContext.builder()
                 .id(userContextProjection.getId())
                 .interests(userContextProjection.getInterests())
@@ -32,14 +34,14 @@ public class UserService {
     public User create(UserCreateRequest createRequest) {
         User.UserBuilder userBuilder = User.builder();
         if (createRequest.getInterestIds() != null && !createRequest.getInterestIds().isEmpty()) {
-            List<Interest> interestList = interestRepository.findAllById(createRequest.getInterestIds());
+            Set<Interest> interestList = interestService.getInterestsFromIds(createRequest.getInterestIds());
             userBuilder.interests(interestList);
         }
         return userRepository.save(userBuilder.build());
     }
 
     public User update(UserUpdateRequest updateRequest) {
-        List<Interest> interestList = interestRepository.findAllById(updateRequest.getInterestIds());
+        Set<Interest> interestList = interestService.getInterestsFromIds(updateRequest.getInterestIds());
         User user = userRepository.findById(updateRequest.getId()).orElseThrow(()
                 -> new RuntimeException("User not found id: " + updateRequest.getId()));
         user.setInterests(interestList);

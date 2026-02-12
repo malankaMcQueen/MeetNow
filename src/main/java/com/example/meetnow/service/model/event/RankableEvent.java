@@ -5,15 +5,18 @@ import java.util.Set;
 
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.Interest;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
-@Value
+//@Value
+@Getter
 @Builder(toBuilder = true)
+@AllArgsConstructor
+@ToString
 public class RankableEvent {
 
-    Long id;
-    GeoPoint coordinates;
-    LocalDateTime startTime;
-    Set<Interest> interests;
+    private Long id;
+    private GeoPoint coordinates;
+    private LocalDateTime startTime;
+    private Set<Interest> interests;
+
 }

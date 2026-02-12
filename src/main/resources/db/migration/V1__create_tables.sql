@@ -27,8 +27,9 @@ CREATE TABLE geo_point (
 
 CREATE TABLE event (
        id           SERIAL PRIMARY KEY,
-       geo_point_id INT NOT NULL REFERENCES geo_point(id),
-       start_time    TIMESTAMP NOT NULL
+       created_time  TIMESTAMP NOT NULL,
+       start_time    TIMESTAMP NOT NULL,
+       geo_point_id INT NOT NULL REFERENCES geo_point(id)
 );
 
 CREATE TABLE event_interest (

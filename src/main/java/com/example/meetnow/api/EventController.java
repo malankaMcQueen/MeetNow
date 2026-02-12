@@ -7,13 +7,7 @@ import com.example.meetnow.service.model.event.EventCreateRequest;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
 import com.example.meetnow.service.model.event.EventUpdateRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,22 +20,23 @@ public class EventController {
 
     @GetMapping("/recommendations/{userId}")
     public List<EventPreviewResponse> getEventListForUser(@PathVariable Long userId,
-            @RequestBody GeoPoint userCoordinates) {
-        return eventService.getEventsForUser(userId, userCoordinates);
+            @RequestParam Double lat,
+            @RequestParam Double lon) {
+        return eventService.getEventsForUser(userId, new GeoPoint(null, lat, lon));
     }
 
     @PostMapping
-    public Event createEvent(EventCreateRequest eventCreateRequest) {
+    public Event createEvent(@RequestBody EventCreateRequest eventCreateRequest) {
         return eventService.createEvent(eventCreateRequest);
     }
 
     @PutMapping("/{eventId}")
-    public Event updateEvent(@PathVariable Long eventId, EventUpdateRequest eventUpdateRequest) {
+    public Event updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest eventUpdateRequest) {
         return eventService.updateEvent(eventId, eventUpdateRequest);
     }
 
     @GetMapping("/{eventId}")
     public Event getEvent(@PathVariable Long eventId) {
-        return null;
+        return eventService.getEvent(eventId);
     }
 }

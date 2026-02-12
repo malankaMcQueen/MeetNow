@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_profile")
@@ -34,6 +35,6 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "interest_id")
     )
-    private List<Interest> interests;
+    private Set<Interest> interests;
 
 }

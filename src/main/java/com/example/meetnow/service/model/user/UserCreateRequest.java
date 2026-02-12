@@ -2,10 +2,10 @@ package com.example.meetnow.service.model.user;
 
 import lombok.Value;
 
-import java.util.List;
+import java.util.Set;
 
 @Value
 public class UserCreateRequest {
 
-    List<Long> interestIds;
+    Set<Long> interestIds;
 }
