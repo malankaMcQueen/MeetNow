@@ -10,6 +10,7 @@ import com.example.meetnow.service.model.event.EventPreviewResponse;
 import com.example.meetnow.service.model.event.RankableEvent;
 import com.example.meetnow.service.model.UserContext;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.example.meetnow.service.user.UserService;
@@ -41,29 +42,29 @@ public class EventSelectionService {
         Map<Long, RankableEvent> eventMap = new LinkedHashMap<>();
 
         // todo delete
-//        List<RankableEvent> events = eventRepository.findAllRankableEvents().stream().map(proj ->
-//                RankableEvent.builder().id(proj.getId())
-//                        .startTime(proj.getStartTime())
-//                        .coordinates(proj.getCoordinates())
-//                        .interests(proj.getInterests())
-//                        .build())
-//                .toList();
-//        System.out.println(events);
+        List<RankableEvent> events = eventRepository.findByStartTimeAfter(LocalDateTime.now()).stream().map(proj ->
+                RankableEvent.builder().id(proj.getId())
+                        .startTime(proj.getStartTime())
+                        .coordinates(proj.getCoordinates())
+                        .interests(proj.getInterests())
+                        .build())
+                .toList();
+        System.out.println(events);
 
-        eventRepository.findAllRankableEvents().forEach(proj -> {
-            RankableEvent event = eventMap.computeIfAbsent(
-                    proj.getId(),
-                    id   -> RankableEvent.builder()
-                            .id(proj.getId())
-                            .coordinates(proj.getCoordinates())
-                            .startTime(proj.getStartTime())
-                            .interests(new HashSet<>())
-                            .build()
-            );
-
-            // Добавляем все интересы из текущей проекции
-            event.getInterests().addAll(proj.getInterests());
-        });
+//        eventRepository.findAllRankableEvents().forEach(proj -> {
+//            RankableEvent event = eventMap.computeIfAbsent(
+//                    proj.getId(),
+//                    id   -> RankableEvent.builder()
+//                            .id(proj.getId())
+//                            .coordinates(proj.getCoordinates())
+//                            .startTime(proj.getStartTime())
+//                            .interests(new HashSet<>())
+//                            .build()
+//            );
+//
+//            // Добавляем все интересы из текущей проекции
+//            event.getInterests().addAll(proj.getInterests());
+//        });
 
         return eventMap.values().stream().toList();
     }

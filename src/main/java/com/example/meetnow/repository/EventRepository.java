@@ -4,11 +4,13 @@ import com.example.meetnow.repository.projection.EventInterestProjection;
 import com.example.meetnow.repository.projection.RankableEventProjection;
 import com.example.meetnow.service.model.event.Event;
 import com.example.meetnow.service.model.event.RankableEvent;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -43,15 +45,19 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 //
 
 
-    @Query("""
-    SELECT
-        e.id as id,
-        e.coordinates as coordinates,
-        e.startTime as startTime,
-        e.interests as interests
-    FROM Event e
-    """)
-    List<RankableEventProjection> findAllRankableEvents();
+//    @Query("""
+//    SELECT
+//        e.id as id,
+//        e.coordinates as coordinates,
+//        e.startTime as startTime,
+//        e.interests as interests
+//    FROM Event e
+//    WHERE startTime > CURRENT_TIMESTAMP
+//    """)
+//    List<RankableEventProjection> findAllRankableEvents();
+
+    @EntityGraph(attributePaths = {"coordinates", "interests"})
+    List<RankableEventProjection> findByStartTimeAfter(LocalDateTime time);
 
 
 //    @Query("""
