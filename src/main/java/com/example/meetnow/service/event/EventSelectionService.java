@@ -4,15 +4,13 @@ import com.example.meetnow.api.mapper.EventPreviewMapper;
 import com.example.meetnow.repository.EventRepository;
 import com.example.meetnow.repository.projection.RankableEventProjection;
 import com.example.meetnow.service.event.sorting.EventSorter;
+import com.example.meetnow.service.event.sorting.ScoredEvent;
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
 import com.example.meetnow.service.model.event.RankableEvent;
 import com.example.meetnow.service.model.UserContext;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.example.meetnow.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -34,18 +32,23 @@ public class EventSelectionService {
         UserContext userContext = userService.getUserContextById(userId).toBuilder().coordinates(userCoordinates)
                 .build();
 
-        List<RankableEvent> sorted = sortEventsByRelevance(userContext, candidates);
+        List<ScoredEvent> sorted = sortEventsByRelevance(userContext, candidates);
 
-        return sorted.stream().map(EventPreviewMapper::fromRankableEvent).toList();
+        return sorted.stream().map(EventPreviewMapper::fromScoredEvent).toList();
     }
-
-//    private List<RankableEvent> getEventListForUser() {
-//        return eventRepository.findAllRankableEvents().stream().map(RankableEventProjection::toRankableEvent).toList();
-//        return eventRepository.findAllRankableEvents();
-//    }
 
     private List<RankableEvent> getEventListForUser() {
         Map<Long, RankableEvent> eventMap = new LinkedHashMap<>();
+
+        // todo delete
+//        List<RankableEvent> events = eventRepository.findAllRankableEvents().stream().map(proj ->
+//                RankableEvent.builder().id(proj.getId())
+//                        .startTime(proj.getStartTime())
+//                        .coordinates(proj.getCoordinates())
+//                        .interests(proj.getInterests())
+//                        .build())
+//                .toList();
+//        System.out.println(events);
 
         eventRepository.findAllRankableEvents().forEach(proj -> {
             RankableEvent event = eventMap.computeIfAbsent(
@@ -65,7 +68,7 @@ public class EventSelectionService {
         return eventMap.values().stream().toList();
     }
 
-    private List<RankableEvent> sortEventsByRelevance(UserContext userContext, List<RankableEvent> events) {
+    private List<ScoredEvent> sortEventsByRelevance(UserContext userContext, List<RankableEvent> events) {
         return eventSorter.sort(userContext, events);
     }
 }

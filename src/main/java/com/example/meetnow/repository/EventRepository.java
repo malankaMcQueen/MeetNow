@@ -41,6 +41,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 //    """)
 //    List<RankableEvent> findAllRankableEvents();
 //
+
+
     @Query("""
     SELECT
         e.id as id,
@@ -50,6 +52,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     FROM Event e
     """)
     List<RankableEventProjection> findAllRankableEvents();
+
+
 //    @Query("""
 //    SELECT new com.example.meetnow.dto.RankableEventDTO(
 //        e.id,

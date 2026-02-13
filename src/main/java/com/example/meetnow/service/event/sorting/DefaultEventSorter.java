@@ -17,7 +17,7 @@ public class DefaultEventSorter implements EventSorter {
     private final List<FactorCalculatorStrategy> factorCalculators;
 
     @Override
-    public List<RankableEvent> sort(UserContext userContext, List<RankableEvent> events) {
+    public List<ScoredEvent> sort(UserContext userContext, List<RankableEvent> events) {
         CalculationContext.CalculationContextBuilder contextBuilder = CalculationContext.builder()
                 .userContext(userContext).dateTime(LocalDateTime.now());
 
@@ -25,7 +25,7 @@ public class DefaultEventSorter implements EventSorter {
                 .map(event -> new ScoredEvent(event, calculateScore(contextBuilder, event)))
                 .sorted(Comparator.comparing(ScoredEvent::score).reversed()).toList();
 
-        return scoredEvents.stream().map(ScoredEvent::event).toList();
+        return scoredEvents;
     }
 
     private double calculateScore(CalculationContext.CalculationContextBuilder contextBuilder, RankableEvent event) {

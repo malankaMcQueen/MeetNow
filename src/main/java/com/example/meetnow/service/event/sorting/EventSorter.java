@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface EventSorter {
 
-    List<RankableEvent> sort(UserContext userContext, List<RankableEvent> events);
+    List<ScoredEvent> sort(UserContext userContext, List<RankableEvent> events);
 
 }
