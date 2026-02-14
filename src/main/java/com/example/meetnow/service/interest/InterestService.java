@@ -5,7 +5,9 @@ import com.example.meetnow.service.model.Interest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,5 +21,9 @@ public class InterestService {
             throw new RuntimeException("Incorrect interest ids: " + interestIds);
         }
         return interests;
+    }
+
+    public Set<Interest> getAll() {
+        return new HashSet<>(interestRepository.findAll());
     }
 }

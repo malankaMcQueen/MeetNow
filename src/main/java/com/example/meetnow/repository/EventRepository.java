@@ -2,6 +2,7 @@ package com.example.meetnow.repository;
 
 import com.example.meetnow.repository.projection.EventInterestProjection;
 import com.example.meetnow.repository.projection.RankableEventProjection;
+import com.example.meetnow.service.event.calculator.time.OptimalTimeSegment;
 import com.example.meetnow.service.model.event.Event;
 import com.example.meetnow.service.model.event.RankableEvent;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
+
     // todo  мб jpql?
 //    @Query(value = """
 //                SELECT e.id AS event_id,

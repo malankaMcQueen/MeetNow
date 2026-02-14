@@ -4,10 +4,12 @@ import com.example.meetnow.repository.EventRepository;
 import com.example.meetnow.service.interest.InterestService;
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.Interest;
+import com.example.meetnow.service.model.User;
 import com.example.meetnow.service.model.event.Event;
 import com.example.meetnow.service.model.event.EventCreateRequest;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
 import com.example.meetnow.service.model.event.EventUpdateRequest;
+import com.example.meetnow.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ public class EventService {
 
     private final InterestService interestService;
 
+    private final UserService userService;
+
     private final EventRepository eventRepository;
 
     public List<EventPreviewResponse> getEventsForUser(Long userId, GeoPoint userCoordinates) {
@@ -32,17 +36,24 @@ public class EventService {
     }
 
     public Event createEvent(EventCreateRequest eventCreateRequest) {
-        log.info("Create Event: {}", eventCreateRequest);
         Set<Interest> interests = Set.of();
         if (eventCreateRequest.getInterestIds() != null && !eventCreateRequest.getInterestIds().isEmpty()) {
             interests = interestService.getInterestsFromIds(eventCreateRequest.getInterestIds());
         }
 
+        User organizer = userService.getUser(eventCreateRequest.getOrganizerId());
+
         Event event = Event.builder()
-                .coordinates(eventCreateRequest.getCoordinates())
+                .title(eventCreateRequest.getTitle())
+                .description(eventCreateRequest.getDescription())
                 .startTime(eventCreateRequest.getStartTime())
-                .interests(interests)
                 .createdTime(LocalDateTime.now())
+                .coordinates(GeoPoint.builder()
+                        .latitude(eventCreateRequest.getCoordinates().latitude())
+                        .longitude(eventCreateRequest.getCoordinates().longitude())
+                        .build())
+                .interests(interests)
+                .organizer(organizer)
                 .build();
 
         return eventRepository.save(event);

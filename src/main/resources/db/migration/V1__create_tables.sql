@@ -1,5 +1,8 @@
 CREATE TABLE user_profile (
-      id SERIAL PRIMARY KEY
+      id SERIAL PRIMARY KEY,
+      name VARCHAR NOT NULL,
+      birthday_date TIMESTAMP NOT NULL,
+      description VARCHAR
 );
 
 CREATE TABLE category (
@@ -27,8 +30,11 @@ CREATE TABLE geo_point (
 
 CREATE TABLE event (
        id           SERIAL PRIMARY KEY,
-       created_time  TIMESTAMP NOT NULL,
-       start_time    TIMESTAMP NOT NULL,
+       title        VARCHAR NOT NULL,
+       description  VARCHAR NOT NULL,
+       created_time TIMESTAMP NOT NULL,
+       start_time   TIMESTAMP NOT NULL,
+       organizer_id BIGINT NOT NULL REFERENCES user_profile(id),
        geo_point_id INT NOT NULL REFERENCES geo_point(id)
 );
 

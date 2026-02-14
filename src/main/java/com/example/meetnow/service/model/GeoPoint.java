@@ -14,6 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)  // для JPA
 @Builder(toBuilder = true)
+@ToString
 public class GeoPoint {
 
     @Id

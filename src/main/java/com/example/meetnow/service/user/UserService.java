@@ -33,10 +33,16 @@ public class UserService {
 
     public User create(UserCreateRequest createRequest) {
         User.UserBuilder userBuilder = User.builder();
+
         if (createRequest.getInterestIds() != null && !createRequest.getInterestIds().isEmpty()) {
             Set<Interest> interestList = interestService.getInterestsFromIds(createRequest.getInterestIds());
             userBuilder.interests(interestList);
         }
+
+        userBuilder.name(createRequest.getName())
+                .birthdayDate(createRequest.getBirthdayDate())
+                .description(createRequest.getDescription());
+
         return userRepository.save(userBuilder.build());
     }
 
@@ -47,5 +53,9 @@ public class UserService {
         user.setInterests(interestList);
         userRepository.save(user);
         return user;
+    }
+
+    public User getUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found. Id = " + userId));
     }
 }

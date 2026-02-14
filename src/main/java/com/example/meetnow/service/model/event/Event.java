@@ -2,22 +2,9 @@ package com.example.meetnow.service.model.event;
 
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.Interest;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.example.meetnow.service.model.User;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -30,11 +17,18 @@ import java.util.Set;
 @Entity
 @Table(name = "event")
 @AllArgsConstructor
+@ToString
 public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "start_time")
     private LocalDateTime startTime;
@@ -46,6 +40,10 @@ public class Event {
     @JoinColumn(name = "geo_point_id")
     private GeoPoint coordinates;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "organizer_id")
+    private User organizer;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "event_interest",
@@ -54,5 +52,4 @@ public class Event {
     )
     @Fetch(FetchMode.SUBSELECT)
     private Set<Interest> interests;
-
 }
