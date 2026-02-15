@@ -1,10 +1,8 @@
-package com.example.meetnow.repository;
+package com.example.meetnow.service.repository;
 
-import com.example.meetnow.repository.projection.EventInterestProjection;
-import com.example.meetnow.repository.projection.RankableEventProjection;
-import com.example.meetnow.service.event.calculator.time.OptimalTimeSegment;
+import com.example.meetnow.service.repository.projection.EventInterestProjection;
+import com.example.meetnow.service.repository.projection.RankableEventProjection;
 import com.example.meetnow.service.model.event.Event;
-import com.example.meetnow.service.model.event.RankableEvent;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Repository

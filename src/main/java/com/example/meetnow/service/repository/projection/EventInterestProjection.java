@@ -1,4 +1,4 @@
-package com.example.meetnow.repository.projection;
+package com.example.meetnow.service.repository.projection;
 
 public interface EventInterestProjection {
     Long getEventId();

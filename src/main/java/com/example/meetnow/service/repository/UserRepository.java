@@ -1,6 +1,6 @@
-package com.example.meetnow.repository;
+package com.example.meetnow.service.repository;
 
-import com.example.meetnow.repository.projection.UserContextProjection;
+import com.example.meetnow.service.repository.projection.UserContextProjection;
 import com.example.meetnow.service.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

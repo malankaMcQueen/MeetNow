@@ -1,7 +1,7 @@
 package com.example.meetnow;
 
-import com.example.meetnow.repository.EventRepository;
-import com.example.meetnow.repository.UserActionRepository;
+import com.example.meetnow.service.repository.EventRepository;
+import com.example.meetnow.service.repository.UserActionRepository;
 import com.example.meetnow.service.model.UserAction;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;

@@ -1,9 +1,9 @@
 package com.example.meetnow.service.event.calculator;
 
 import com.example.meetnow.configuration.EventSortingProperties;
-import com.example.meetnow.repository.EventRepository;
-import com.example.meetnow.repository.UserActionRepository;
-import com.example.meetnow.repository.projection.EventInterestProjection;
+import com.example.meetnow.service.repository.EventRepository;
+import com.example.meetnow.service.repository.UserActionRepository;
+import com.example.meetnow.service.repository.projection.EventInterestProjection;
 import com.example.meetnow.service.model.CalculationContext;
 import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.UserAction;

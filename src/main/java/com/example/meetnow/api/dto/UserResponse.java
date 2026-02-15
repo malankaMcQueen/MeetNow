@@ -1,12 +1,16 @@
-package com.example.meetnow.service.model.user;
+package com.example.meetnow.api.dto;
 
+import lombok.Builder;
 import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 @Value
-public class UserCreateRequest {
+@Builder(toBuilder = true)
+public class UserResponse {
+
+    Long id;
 
     String name;
 
@@ -16,5 +20,5 @@ public class UserCreateRequest {
 
     Long imageId;
 
-    Set<Long> interestIds;
+    Set<InterestDto> interests;
 }

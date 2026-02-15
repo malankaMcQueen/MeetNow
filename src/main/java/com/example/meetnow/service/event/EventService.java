@@ -1,6 +1,6 @@
 package com.example.meetnow.service.event;
 
-import com.example.meetnow.repository.EventRepository;
+import com.example.meetnow.service.repository.EventRepository;
 import com.example.meetnow.service.interest.InterestService;
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.Interest;

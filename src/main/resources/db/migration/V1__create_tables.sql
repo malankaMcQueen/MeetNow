@@ -1,8 +1,18 @@
+CREATE TABLE file_resource (
+                               id  SERIAL PRIMARY KEY,
+                               stored_name VARCHAR,
+                               content_type VARCHAR,
+                               size BIGINT,
+                               path VARCHAR,
+                               created_at TIMESTAMP
+);
+
 CREATE TABLE user_profile (
       id SERIAL PRIMARY KEY,
       name VARCHAR NOT NULL,
       birthday_date TIMESTAMP NOT NULL,
-      description VARCHAR
+      description VARCHAR,
+      photo_id INT REFERENCES file_resource(id)
 );
 
 CREATE TABLE category (
@@ -35,7 +45,8 @@ CREATE TABLE event (
        created_time TIMESTAMP NOT NULL,
        start_time   TIMESTAMP NOT NULL,
        organizer_id BIGINT NOT NULL REFERENCES user_profile(id),
-       geo_point_id INT NOT NULL REFERENCES geo_point(id)
+       geo_point_id INT NOT NULL REFERENCES geo_point(id),
+       photo_id INT REFERENCES file_resource(id)
 );
 
 CREATE TABLE event_interest (

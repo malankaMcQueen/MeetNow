@@ -1,4 +1,4 @@
-package com.example.meetnow.repository.projection;
+package com.example.meetnow.service.repository.projection;
 
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.Interest;

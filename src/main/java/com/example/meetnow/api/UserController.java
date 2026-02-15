@@ -1,7 +1,9 @@
 package com.example.meetnow.api;
 
+import com.example.meetnow.api.mapper.UserMapper;
 import com.example.meetnow.service.model.User;
 import com.example.meetnow.service.model.user.UserCreateRequest;
+import com.example.meetnow.api.dto.UserResponse;
 import com.example.meetnow.service.user.UserService;
 import com.example.meetnow.service.user.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,20 +19,26 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable("id") Long id) {
-        log.info("Start /user/{}", id);
-        User user = userService.getUser(id);
-        log.info("End /user/{}. Response = {}", id, user);
+    public UserResponse getUser(@PathVariable("id") Long id) {
+        log.info("Start GET /user/{}", id);
+        UserResponse user = UserMapper.map(userService.getUser(id));
+        log.info("End GET /user/{}. Response = {}", id, user);
         return user;
     }
 
     @PostMapping
-    public User createUser(@RequestBody UserCreateRequest createRequest) {
-        return userService.create(createRequest);
+    public UserResponse createUser(@RequestBody UserCreateRequest createRequest) {
+        log.info("Start POST /user. Request = {}", createRequest);
+        UserResponse user = UserMapper.map(userService.create(createRequest));
+        log.info("End POST /user. Response = {}", user);
+        return user;
     }
 
-    @PutMapping
-    public User updateUser(@RequestBody UserUpdateRequest updateRequest) {
-        return userService.update(updateRequest);
+    @PutMapping("/{id}")
+    public UserResponse updateUser(@PathVariable("id") Long id, @RequestBody UserUpdateRequest updateRequest) {
+        log.info("Start PUT /user. Request = {}", updateRequest);
+        UserResponse user = UserMapper.map(userService.update(id, updateRequest));
+        log.info("End PUT /user. Response = {}", user);
+        return user;
     }
 }

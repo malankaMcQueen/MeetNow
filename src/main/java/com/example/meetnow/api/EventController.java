@@ -22,11 +22,11 @@ public class EventController {
 
     @GetMapping("/recommendations/{userId}")
     public List<EventPreviewResponse> getEventListForUser(@PathVariable Long userId,
-            @RequestParam Double latitude,
-            @RequestParam Double longitude) {
-        log.info("Start GET /event/recommendations/{}. Request: lat = {}, lon = {}", userId, latitude, longitude);
+            @RequestParam Double lat,
+            @RequestParam Double lon) {
+        log.info("Start GET /event/recommendations/{}. Request: lat = {}, lon = {}", userId, lat, lon);
 
-        List<EventPreviewResponse> eventsPreviewResponse = eventService.getEventsForUser(userId, new GeoPoint(null, latitude, longitude));
+        List<EventPreviewResponse> eventsPreviewResponse = eventService.getEventsForUser(userId, new GeoPoint(null, lat, lon));
 
         log.info("End GET /event/recommendations/{}. Response = {}", userId, eventsPreviewResponse);
         return eventsPreviewResponse;

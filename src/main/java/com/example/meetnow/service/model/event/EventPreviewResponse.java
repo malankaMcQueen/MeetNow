@@ -13,9 +13,11 @@ import java.util.Set;
 public class EventPreviewResponse {
 
     Long id;
-    Double weight;
-    GeoPoint coordinates;
+    String title;
+    String description;
     LocalDateTime startTime;
+    GeoPoint coordinates;
     Set<Interest> interests;
+    Double weight;
 
 }

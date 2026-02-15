@@ -1,4 +1,4 @@
-package com.example.meetnow.repository;
+package com.example.meetnow.service.repository;
 
 import com.example.meetnow.service.model.UserAction;
 import org.springframework.data.jpa.repository.JpaRepository;
