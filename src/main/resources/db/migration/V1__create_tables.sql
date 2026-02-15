@@ -55,6 +55,12 @@ CREATE TABLE event_interest (
         PRIMARY KEY (event_id, interest_id)
 );
 
+CREATE TABLE event_participant (
+        event_id    INT NOT NULL REFERENCES event(id),
+        user_id     INT NOT NULL REFERENCES user_profile(id),
+        PRIMARY KEY (event_id, user_id)
+);
+
 CREATE TABLE action_type (
          id     SERIAL PRIMARY KEY,
          name   VARCHAR NOT NULL,

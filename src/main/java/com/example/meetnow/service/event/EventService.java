@@ -1,5 +1,6 @@
 package com.example.meetnow.service.event;
 
+import com.example.meetnow.api.dto.JoinEventRequest;
 import com.example.meetnow.service.repository.EventRepository;
 import com.example.meetnow.service.interest.InterestService;
 import com.example.meetnow.service.model.GeoPoint;
@@ -10,6 +11,7 @@ import com.example.meetnow.service.model.event.EventCreateRequest;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
 import com.example.meetnow.service.model.event.EventUpdateRequest;
 import com.example.meetnow.service.user.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -78,5 +80,23 @@ public class EventService {
     public Event getEvent(Long eventId) {
         return eventRepository.findById(eventId).orElseThrow(()
                 -> new RuntimeException("Event with id: " + eventId + "not found" ));
+    }
+
+    @Transactional
+    public Event joinToEvent(Long eventId, JoinEventRequest request) {
+        Event event = eventRepository.findWithParticipantsById(eventId).orElseThrow(()
+                -> new RuntimeException("Event with id: " + eventId + "not found" ));
+
+        User user = userService.getUser(request.getUserId());
+
+        Set<User> participants = event.getParticipants();
+
+        participants.add(user);
+
+        event.setParticipants(participants);
+
+        eventRepository.save(event);
+
+        return event;
     }
 }

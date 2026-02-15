@@ -13,6 +13,7 @@ import java.util.Set;
 
 @Builder(toBuilder = true)
 @Getter
+@Setter
 @NoArgsConstructor(force = true)
 @Entity
 @Table(name = "event")
@@ -52,4 +53,14 @@ public class Event {
     )
     @Fetch(FetchMode.SUBSELECT)
     private Set<Interest> interests;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "event_participant",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<User> participants;
+
 }

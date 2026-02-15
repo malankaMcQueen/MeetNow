@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -84,6 +85,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         WHERE e.id IN :eventIds
         """)
     List<EventInterestProjection> findInterestsByEventIds(@Param("eventIds") Set<Long> eventIds);
+
+    @EntityGraph(attributePaths = {"participants"})
+    Optional<Event> findWithParticipantsById(Long id);
     //    @SqlQuery("""
 //                SELECT e.id AS event_id,
 //                       e.start_time AS start_time,

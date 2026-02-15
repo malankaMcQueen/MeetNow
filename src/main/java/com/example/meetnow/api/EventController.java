@@ -1,5 +1,8 @@
 package com.example.meetnow.api;
 
+import com.example.meetnow.api.dto.EventParticipantsResponse;
+import com.example.meetnow.api.dto.JoinEventRequest;
+import com.example.meetnow.api.mapper.EventMapper;
 import com.example.meetnow.service.event.EventService;
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.event.Event;
@@ -8,6 +11,7 @@ import com.example.meetnow.service.model.event.EventPreviewResponse;
 import com.example.meetnow.service.model.event.EventUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +23,14 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+
+    @GetMapping("/{eventId}")
+    public Event getEvent(@PathVariable Long eventId) {
+        log.info("Start GET /event/{}", eventId);
+        Event event = eventService.getEvent(eventId);
+        log.info("End GET /event/{}. Response = {}", eventId, event);
+        return event;
+    }
 
     @GetMapping("/recommendations/{userId}")
     public List<EventPreviewResponse> getEventListForUser(@PathVariable Long userId,
@@ -48,11 +60,13 @@ public class EventController {
         return event;
     }
 
-    @GetMapping("/{eventId}")
-    public Event getEvent(@PathVariable Long eventId) {
-        log.info("Start GET /event/{}", eventId);
-        Event event = eventService.getEvent(eventId);
-        log.info("End GET /event/{}. Response = {}", eventId, event);
-        return event;
+    @PostMapping("/{eventId}/join")
+    public EventParticipantsResponse joinToEvent (@PathVariable("eventId") Long eventId, @RequestBody JoinEventRequest request) {
+        log.info("Start POST /{}/join Request: {}", eventId, request);
+
+        EventParticipantsResponse response = EventMapper.map(eventService.joinToEvent(eventId, request))
+                ;
+        log.info("End POST /{}/join. Response: {}", eventId, response);
+        return response;
     }
 }
