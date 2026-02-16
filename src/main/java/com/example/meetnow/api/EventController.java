@@ -1,6 +1,7 @@
 package com.example.meetnow.api;
 
 import com.example.meetnow.api.dto.EventParticipantsResponse;
+import com.example.meetnow.api.dto.EventResponse;
 import com.example.meetnow.api.dto.JoinEventRequest;
 import com.example.meetnow.api.mapper.EventMapper;
 import com.example.meetnow.service.event.EventService;
@@ -25,9 +26,9 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping("/{eventId}")
-    public Event getEvent(@PathVariable Long eventId) {
+    public EventResponse getEvent(@PathVariable Long eventId) {
         log.info("Start GET /event/{}", eventId);
-        Event event = eventService.getEvent(eventId);
+        EventResponse event = EventMapper.mapToEventResponse(eventService.getEvent(eventId));
         log.info("End GET /event/{}. Response = {}", eventId, event);
         return event;
     }
@@ -61,11 +62,10 @@ public class EventController {
     }
 
     @PostMapping("/{eventId}/join")
-    public EventParticipantsResponse joinToEvent (@PathVariable("eventId") Long eventId, @RequestBody JoinEventRequest request) {
+    public EventParticipantsResponse joinToEvent(@PathVariable("eventId") Long eventId, @RequestBody JoinEventRequest request) {
         log.info("Start POST /{}/join Request: {}", eventId, request);
 
-        EventParticipantsResponse response = EventMapper.map(eventService.joinToEvent(eventId, request))
-                ;
+        EventParticipantsResponse response = EventMapper.mapToParticipantsResponse(eventService.joinToEvent(eventId, request));
         log.info("End POST /{}/join. Response: {}", eventId, response);
         return response;
     }

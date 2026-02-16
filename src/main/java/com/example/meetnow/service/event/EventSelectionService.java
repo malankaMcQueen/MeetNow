@@ -38,8 +38,6 @@ public class EventSelectionService {
     }
 
     private List<RankableEvent> getEventListForUser() {
-        Map<Long, RankableEvent> eventMap = new LinkedHashMap<>();
-
         List<RankableEvent> events = eventRepository.findByStartTimeAfter(LocalDateTime.now()).stream().map(proj ->
                 RankableEvent.builder().id(proj.getId())
                         .startTime(proj.getStartTime())

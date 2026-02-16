@@ -78,7 +78,7 @@ public class EventService {
     }
 
     public Event getEvent(Long eventId) {
-        return eventRepository.findById(eventId).orElseThrow(()
+        return eventRepository.findWithAllDataById(eventId).orElseThrow(()
                 -> new RuntimeException("Event with id: " + eventId + "not found" ));
     }
 

@@ -86,8 +86,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         """)
     List<EventInterestProjection> findInterestsByEventIds(@Param("eventIds") Set<Long> eventIds);
 
+    @Query("""
+        SELECT DISTINCT e
+        FROM Event e
+        LEFT JOIN FETCH e.participants
+        WHERE e.id = :id
+        """)
+    Optional<Event> findWithAllDataById(Long id);
+
     @EntityGraph(attributePaths = {"participants"})
-    Optional<Event> findWithParticipantsById(Long id);
+    Optional<Event> findWithParticipantsById(Long eventId);
     //    @SqlQuery("""
 //                SELECT e.id AS event_id,
 //                       e.start_time AS start_time,
