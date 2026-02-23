@@ -40,6 +40,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // ← ДОБАВИТЬ! ОБЯЗАТЕЛЬНО!
 
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//    implementation 'software.amazon.awssdk:s3:2.25.XX'
+//    implementation "software.amazon.awssdk:sts"
+
+    implementation 'software.amazon.awssdk:s3:2.20.101'
+    implementation 'net.coobird:thumbnailator:0.4.20'
 //    implementation 'org.hibernate:hibernate-core:7.0.0.Final'
 
     implementation 'org.flywaydb:flyway-database-postgresql'

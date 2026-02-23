@@ -18,7 +18,7 @@ public class UserResponse {
 
     String description;
 
-    Long imageId;
+    String imageUrl;
 
     Set<InterestDto> interests;
 }

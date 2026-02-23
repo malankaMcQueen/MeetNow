@@ -13,6 +13,8 @@ import com.example.meetnow.service.model.event.EventUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,6 +63,14 @@ public class EventController {
         return event;
     }
 
+    @DeleteMapping("/{eventId}")
+    public void deleteEvent(@PathVariable Long eventId) {
+        log.info("Start DELETE /event/{}", eventId);
+        eventService.deactivateEvent(eventId);
+        log.info("End DELETE /event/{}", eventId);
+        return;
+    }
+
     @PostMapping("/{eventId}/join")
     public EventParticipantsResponse joinToEvent(@PathVariable("eventId") Long eventId, @RequestBody JoinEventRequest request) {
         log.info("Start POST /{}/join Request: {}", eventId, request);
@@ -68,5 +78,30 @@ public class EventController {
         EventParticipantsResponse response = EventMapper.mapToParticipantsResponse(eventService.joinToEvent(eventId, request));
         log.info("End POST /{}/join. Response: {}", eventId, response);
         return response;
+    }
+
+    @PostMapping("/{eventId}/leave")
+    public EventParticipantsResponse leaveFromEvent(@PathVariable("eventId") Long eventId) {
+        log.info("Start POST event/{}/leave", eventId);
+
+        EventParticipantsResponse response = EventMapper.mapToParticipantsResponse(eventService.leaveFromEvent(eventId));
+        log.info("End POST event/{}/leave. Response: {}", eventId, response);
+        return response;
+    }
+
+    @GetMapping("/created")
+    public List<EventResponse> getCreatedEvent() {
+        log.info("Start GET /event/created");
+        List<EventResponse> events = EventMapper.mapToEventResponseFromList(eventService.getCreatedEvent());
+        log.info("End GET /event/created. Response = {}", events);
+        return events;
+    }
+
+    @GetMapping("/joined")
+    public List<EventResponse> getJoinedEvent() {
+        log.info("Start GET /event/joined");
+        List<EventResponse> events = EventMapper.mapToEventResponseFromList(eventService.getJoinedEvent());
+        log.info("End GET /event/joined. Response = {}", events);
+        return events;
     }
 }

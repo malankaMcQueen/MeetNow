@@ -1,16 +1,13 @@
 package com.example.meetnow.api.mapper;
 
+import com.example.meetnow.api.dto.CategoryDto;
 import com.example.meetnow.api.dto.EventParticipantsResponse;
 import com.example.meetnow.api.dto.EventResponse;
 import com.example.meetnow.api.dto.InterestDto;
-import com.example.meetnow.api.dto.UserResponse;
-import com.example.meetnow.service.event.sorting.ScoredEvent;
 import com.example.meetnow.service.model.*;
 import com.example.meetnow.service.model.event.Event;
-import com.example.meetnow.service.model.event.EventPreviewResponse;
-import com.example.meetnow.service.model.event.RankableEvent;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,6 +32,7 @@ public final class EventMapper {
                 .organizer(mapUser(event.getOrganizer()))
                 .participantsCount(event.getParticipants().size())
                 .interests(mapInterests(event.getInterests()))
+                .imageUrl(event.getPhoto().getPath())
                 .build();
     }
 
@@ -51,7 +49,7 @@ public final class EventMapper {
                 .build();
     }
 
-    private static Set<InterestDto> mapInterests(Set<Interest> interests) {
+    public static Set<InterestDto> mapInterests(Set<Interest> interests) {
         if (interests == null) {
             return Set.of();
         }
@@ -61,25 +59,29 @@ public final class EventMapper {
                 .map(interest -> InterestDto.builder()
                         .id(interest.getId())
                         .name(interest.getName())
+                        .category(new CategoryDto(interest.getCategory().getId(), interest.getCategory().getName()))
                         .build())
                 .collect(Collectors.toSet());
     }
 
-    private static Participant mapUser(User participant) {
+    public static Participant mapUser(User participant) {
         if (participant == null)
             return null;
         return Participant.builder()
                         .userId(participant.getId())
                         .name(participant.getName())
-                        .avatar(participant.getPhoto() != null ? participant.getPhoto().getPath() : null)
+                        .avatarUrl(participant.getPhoto() != null ? participant.getPhoto().getPath() : null)
                         .build();
     }
 
     private static Set<Participant> mapSetOfUser(Set<User> participants) {
         if (participants == null)
             return null;
-        return participants.stream().map(participant ->
-                mapUser(participant)
+        return participants.stream().map(EventMapper::mapUser
         ).collect(Collectors.toSet());
+    }
+
+    public static List<EventResponse> mapToEventResponseFromList(List<Event> events) {
+        return events.stream().map(EventMapper::mapToEventResponse).toList();
     }
 }

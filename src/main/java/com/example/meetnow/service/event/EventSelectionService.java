@@ -1,6 +1,7 @@
 package com.example.meetnow.service.event;
 
 import com.example.meetnow.api.mapper.EventPreviewMapper;
+import com.example.meetnow.service.model.event.Event;
 import com.example.meetnow.service.repository.EventRepository;
 import com.example.meetnow.service.event.sorting.EventSorter;
 import com.example.meetnow.service.event.sorting.ScoredEvent;
@@ -34,12 +35,31 @@ public class EventSelectionService {
 
         List<ScoredEvent> sorted = sortEventsByRelevance(userContext, candidates);
 
-        return sorted.stream().map(EventPreviewMapper::fromScoredEvent).toList();
+        return buildPreviewResponse(sorted);
+//        return sorted.stream().map(EventPreviewMapper::fromScoredEvent).toList();
     }
 
+    private List<EventPreviewResponse> buildPreviewResponse(List<ScoredEvent> sorted) {
+        return sorted.stream()
+                .map(scoredEvent ->
+                        eventRepository.findWithAllDataById(scoredEvent.event().getId())
+                                .map(event -> EventPreviewMapper.fromEvent(event, scoredEvent.score()))
+                )
+                .flatMap(Optional::stream)
+                .toList();
+    }
+
+//    private List<EventPreviewResponse> buildPreviewResponse(List<ScoredEvent> sorted) {
+//        return sorted.stream().map(scoredEvent -> {
+//            Optional<Event> event = eventRepository.findWithAllDataById(scoredEvent.event().getId());
+//            return event.map(EventPreviewMapper.fromEvent(event, scoredEvent.score())).orElse(null);
+//        }).toList();
+//    }
+
     private List<RankableEvent> getEventListForUser() {
-        List<RankableEvent> events = eventRepository.findByStartTimeAfter(LocalDateTime.now()).stream().map(proj ->
-                RankableEvent.builder().id(proj.getId())
+        List<RankableEvent> events = eventRepository.findByStartTimeAfterAndActiveIsTrue(LocalDateTime.now()).stream().map(proj ->
+                RankableEvent.builder()
+                        .id(proj.getId())
                         .startTime(proj.getStartTime())
                         .coordinates(proj.getCoordinates())
                         .interests(proj.getInterests())

@@ -1,6 +1,7 @@
 package com.example.meetnow.api;
 
 import com.example.meetnow.api.mapper.UserMapper;
+import com.example.meetnow.service.model.CurrentUserInfo;
 import com.example.meetnow.service.model.User;
 import com.example.meetnow.service.model.user.UserCreateRequest;
 import com.example.meetnow.api.dto.UserResponse;
@@ -18,6 +19,14 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/me")
+    public CurrentUserInfo getCurrentUser() {
+        log.info("Start GET /user/me");
+        CurrentUserInfo currentUserInfo = userService.getCurrentUser();
+        log.info("End GET /user/me. Response = {}", currentUserInfo);
+        return currentUserInfo;
+    }
+
     @GetMapping("/{id}")
     public UserResponse getUser(@PathVariable("id") Long id) {
         log.info("Start GET /user/{}", id);
@@ -34,10 +43,10 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/{id}")
-    public UserResponse updateUser(@PathVariable("id") Long id, @RequestBody UserUpdateRequest updateRequest) {
+    @PutMapping("/update")
+    public UserResponse updateUser(@RequestBody UserUpdateRequest updateRequest) {
         log.info("Start PUT /user. Request = {}", updateRequest);
-        UserResponse user = UserMapper.map(userService.update(id, updateRequest));
+        UserResponse user = UserMapper.map(userService.update(updateRequest));
         log.info("End PUT /user. Response = {}", user);
         return user;
     }

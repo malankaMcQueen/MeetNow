@@ -1,9 +1,6 @@
 package com.example.meetnow.service.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
 
@@ -25,6 +22,7 @@ public class Interest {
     @EqualsAndHashCode.Include
     private final String name;
 
-    @Column(name = "category_id")
-    private final Long categoryId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private final Category category;
 }

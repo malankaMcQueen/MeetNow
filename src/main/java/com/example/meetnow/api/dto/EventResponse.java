@@ -18,9 +18,11 @@ public class EventResponse {
     String title;
     String description;
     LocalDateTime startTime;
+    boolean active;
     GeoPointDto coordinates;
     Set<Participant> participants;
     Participant organizer;
     Set<InterestDto> interests;
     Integer participantsCount;
+    String imageUrl;
 }

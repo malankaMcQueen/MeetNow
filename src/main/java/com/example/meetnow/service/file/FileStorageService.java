@@ -1,15 +1,22 @@
 package com.example.meetnow.service.file;
 
+import com.example.meetnow.exception.ResourceNotFoundException;
+import com.example.meetnow.service.jwt.JwtService;
 import com.example.meetnow.service.model.FileSaveResponse;
 import com.example.meetnow.service.repository.FileResourceRepository;
 import com.example.meetnow.service.model.FileResource;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
+import org.apache.coyote.BadRequestException;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -19,16 +26,58 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileStorageService {
 
     private final FileResourceRepository repository;
 
+    private final S3Service s3Service;
+
     private static final String UPLOAD_DIR = "uploads";
 
+    private static final int TARGET_SIZE = 1080;  // Размер, к которому будет приводиться изображение (Y x Y)
+
+    public static File processImageWithThumbnailator(MultipartFile file) throws IOException {
+        File tempFile = File.createTempFile("processed-", ".jpg");
+
+        Thumbnails.of(file.getInputStream())
+                .size(FileStorageService.TARGET_SIZE, FileStorageService.TARGET_SIZE)  // Масштабируем изображение
+                .crop(Positions.CENTER)
+                .outputFormat("jpg")  // Формат JPEG
+                .outputQuality(0.8f)  // Устанавливаем качество
+                .toFile(tempFile);  // Записываем в файл
+
+        return tempFile;
+    }
+
     public FileSaveResponse upload(MultipartFile file) throws IOException {
+        // Обработка изображения
+        Long userId = JwtService.getUserId();
+        File processedFile = processImageWithThumbnailator(file);
+        String link = s3Service.uploadFile(userId, processedFile);
+        if (!processedFile.delete()) {
+            log.warn("Failed to delete temporary processed file: " + processedFile.getAbsolutePath());
+        }
+
+        FileResource resource = FileResource.builder()
+                .storedName(file.getName())
+                .contentType(file.getContentType())
+                .size(file.getSize())
+                .path(link)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        resource = repository.save(resource);
+
+        FileSaveResponse response = new FileSaveResponse(resource.getId());
+
+        return response;
+    }
+
+    public FileSaveResponse upload2(MultipartFile file) throws IOException {
 
         if (file.isEmpty()) {
-            throw new IllegalArgumentException("File is empty");
+            throw new BadRequestException("File is empty");
         }
 
         // создаём папку если нет
@@ -68,7 +117,7 @@ public class FileStorageService {
     }
 
     public FileResource getByInfoId(Long imageId) {
-        return repository.findById(imageId).orElseThrow(() -> new RuntimeException("Image not found. Id = " + imageId));
+        return repository.findById(imageId).orElseThrow(() -> new ResourceNotFoundException("Image not found. Id = " + imageId));
     }
 
     public Resource loadAsResource(Long id) throws FileNotFoundException {
@@ -92,6 +141,6 @@ public class FileStorageService {
     }
     public FileResource getFileMetadata(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("File not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("File not found"));
     }
 }

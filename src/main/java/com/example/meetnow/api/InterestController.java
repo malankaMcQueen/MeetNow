@@ -1,5 +1,6 @@
 package com.example.meetnow.api;
 
+import com.example.meetnow.api.dto.InterestDto;
 import com.example.meetnow.service.interest.InterestService;
 import com.example.meetnow.service.model.Interest;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,9 @@ public class InterestController {
     private final InterestService interestService;
 
     @GetMapping("/all")
-    public Set<Interest> getAll() {
+    public Set<InterestDto> getAll() {
         log.info("Start /interest/all");
-        Set<Interest> interests = interestService.getAll();
+        Set<InterestDto> interests = interestService.getAll();
         log.info("End /interest/all. Response = {}", interests);
         return interests;
     }

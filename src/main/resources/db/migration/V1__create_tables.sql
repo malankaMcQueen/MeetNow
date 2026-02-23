@@ -44,6 +44,7 @@ CREATE TABLE event (
        description  VARCHAR NOT NULL,
        created_time TIMESTAMP NOT NULL,
        start_time   TIMESTAMP NOT NULL,
+       active       BOOLEAN NOT NULL,
        organizer_id BIGINT NOT NULL REFERENCES user_profile(id),
        geo_point_id INT NOT NULL REFERENCES geo_point(id),
        photo_id INT REFERENCES file_resource(id)

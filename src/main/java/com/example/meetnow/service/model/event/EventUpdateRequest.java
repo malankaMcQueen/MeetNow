@@ -12,5 +12,6 @@ public class EventUpdateRequest {
     GeoPoint coordinates;
     LocalDateTime startTime;
     Set<Long> interestIds;
+    Long imageId;
 
 }

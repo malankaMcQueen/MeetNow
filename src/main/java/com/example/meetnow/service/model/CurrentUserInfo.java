@@ -5,8 +5,8 @@ import lombok.Value;
 
 @Value
 @Builder
-public class Participant {
-    Long userId;
-    String name;
-    String avatarUrl;
+public class CurrentUserInfo {
+
+    Long id;
+
 }

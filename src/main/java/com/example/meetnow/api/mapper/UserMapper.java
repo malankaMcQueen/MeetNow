@@ -20,7 +20,7 @@ public class UserMapper {
                 .name(user.getName())
                 .birthdayDate(user.getBirthdayDate())
                 .description(user.getDescription())
-                .imageId(user.getPhoto() != null ? user.getPhoto().getId() : null)
+                .imageUrl(user.getPhoto() != null ? user.getPhoto().getPath() : null)
                 .interests(mapInterests(user))
                 .build();
     }

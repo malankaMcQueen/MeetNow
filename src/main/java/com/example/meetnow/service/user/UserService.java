@@ -1,13 +1,12 @@
 package com.example.meetnow.service.user;
 
+import com.example.meetnow.exception.ResourceNotFoundException;
 import com.example.meetnow.service.file.FileStorageService;
-import com.example.meetnow.service.model.FileResource;
+import com.example.meetnow.service.jwt.JwtService;
+import com.example.meetnow.service.model.*;
 import com.example.meetnow.service.repository.UserRepository;
 import com.example.meetnow.service.repository.projection.UserContextProjection;
 import com.example.meetnow.service.interest.InterestService;
-import com.example.meetnow.service.model.Interest;
-import com.example.meetnow.service.model.User;
-import com.example.meetnow.service.model.UserContext;
 import com.example.meetnow.service.model.user.UserCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class UserService {
 
     public UserContext getUserContextById(Long userId) {
         UserContextProjection userContextProjection = userRepository.findUserContextById(userId).orElseThrow(()
-                -> new RuntimeException("User not found id:" + userId));
+                -> new ResourceNotFoundException("User not found id:" + userId));
         return UserContext.builder()
                 .id(userContextProjection.getId())
                 .interests(userContextProjection.getInterests())
@@ -46,7 +45,8 @@ public class UserService {
             image = fileStorageService.getByInfoId(createRequest.getImageId());
         }
 
-        userBuilder.name(createRequest.getName())
+        userBuilder.id(JwtService.getUserId())
+                .name(createRequest.getName())
                 .birthdayDate(createRequest.getBirthdayDate())
                 .description(createRequest.getDescription())
                 .photo(image);
@@ -54,9 +54,11 @@ public class UserService {
         return userRepository.save(userBuilder.build());
     }
 
-    public User update(Long userId, UserUpdateRequest updateRequest) {
+    public User update(UserUpdateRequest updateRequest) {
+        Long userId = JwtService.getUserId();
+
         User user = userRepository.findById(userId).orElseThrow(()
-                -> new RuntimeException("User not found id: " + userId));
+                -> new ResourceNotFoundException("User not found id: " + userId));
 
         Set<Interest> interestList = interestService.getInterestsFromIds(updateRequest.getInterestIds());
 
@@ -79,6 +81,10 @@ public class UserService {
     }
 
     public User getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found. Id = " + userId));
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found. Id = " + userId));
+    }
+
+    public CurrentUserInfo getCurrentUser() {
+        return CurrentUserInfo.builder().id(JwtService.getUserId()).build();
     }
 }

@@ -100,7 +100,7 @@ public class HistoryInterestsFactorCalculator implements FactorCalculatorStrateg
 
     private Interest mapToInterest(EventInterestProjection.InterestProjection projection) {
         if (projection == null) return null;
-        return new Interest(projection.getId(), projection.getName(), projection.getCategoryId());
+        return new Interest(projection.getId(), projection.getName(), projection.getCategory());
     }
 
     private Set<Long> extractEventIds(Set<UserAction> userActions) {

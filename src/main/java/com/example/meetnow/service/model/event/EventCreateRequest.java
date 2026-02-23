@@ -1,6 +1,5 @@
 package com.example.meetnow.service.model.event;
 
-import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.GeoPointDto;
 import lombok.Value;
 
@@ -16,6 +15,5 @@ public class EventCreateRequest {
     LocalDateTime startTime;
     GeoPointDto coordinates;
     Set<Long> interestIds;
-    Long organizerId;
-
+    Long imageId;
 }

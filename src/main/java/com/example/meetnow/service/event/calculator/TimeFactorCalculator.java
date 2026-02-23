@@ -2,6 +2,7 @@ package com.example.meetnow.service.event.calculator;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
+import com.example.meetnow.exception.BadRequestException;
 import com.example.meetnow.service.event.calculator.time.TimeSegmentCalculator;
 import com.example.meetnow.service.model.CalculationContext;
 import com.example.meetnow.service.model.event.RankableEvent;
@@ -26,7 +27,7 @@ public class TimeFactorCalculator implements FactorCalculatorStrategy {
 
         TimeSegmentCalculator timeSegmentCalculator = timeSegmentCalculators.stream()
                 .filter(calculator -> calculator.supports(hoursToEvent)).findFirst()
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new BadRequestException(
                         "Time TimeSegmentCalculator not found. Hours to event: " + hoursToEvent));
 
         return timeSegmentCalculator.calculate(hoursToEvent);

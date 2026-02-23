@@ -1,3 +1,8 @@
+jwt:
+  secret:
+    access: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
+    refresh: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A7532333Q
+
 spring:
   application:
     name: MeetNow
@@ -17,6 +22,16 @@ spring:
         use_sql_comments: true
         highlight_sql: true
         generate_statistics: true
+aws:
+  access:
+    key: b47763f9553a4cf681005ca590fe1087
+  secret:
+    key: fdbe9036278f4259b56846dfaadcbc34
+
+  s3:
+    my_domain: https://aeb07b27-c9f2-4c95-a16b-72df1b5f62f9.selstorage.ru
+    buck_name: matcherphototest
+
 
 app:
   event-sorting:

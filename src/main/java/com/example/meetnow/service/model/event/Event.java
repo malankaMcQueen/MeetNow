@@ -1,5 +1,6 @@
 package com.example.meetnow.service.model.event;
 
+import com.example.meetnow.service.model.FileResource;
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.Interest;
 import com.example.meetnow.service.model.User;
@@ -37,6 +38,9 @@ public class Event {
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
+    @Column(name = "active")
+    private boolean active;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "geo_point_id")
     private GeoPoint coordinates;
@@ -44,6 +48,10 @@ public class Event {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "organizer_id")
     private User organizer;
+
+    @ManyToOne
+    @JoinColumn(name = "photo_id")
+    private FileResource photo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

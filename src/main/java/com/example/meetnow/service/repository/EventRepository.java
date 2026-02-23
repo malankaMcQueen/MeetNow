@@ -17,48 +17,8 @@ import java.util.Set;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    // todo  мб jpql?
-//    @Query(value = """
-//                SELECT e.id AS event_id,
-//                       e.start_time AS start_time,
-//                       gp.latitude AS latitude,
-//                       gp.longitude AS longitude,
-//                       i.id AS interest_id
-//                FROM event e
-//                JOIN geo_point gp ON gp.id = e.geo_point_id
-//                LEFT JOIN event_interest ei ON ei.event_id = e.id
-//                LEFT JOIN interest i ON i.id = ei.interest_id
-//            """, nativeQuery = true)
-//    List<RankableEventProjection> findAllRankableEvents();
-
-//    @Query("""
-//    SELECT DISTINCT new com.example.meetnow.service.model.event.RankableEvent(
-//        e.id,
-//        e.coordinates,
-//        e.startTime,
-//        e.interests
-//    )
-//    FROM Event e
-//    JOIN FETCH e.coordinates gp
-//    LEFT JOIN FETCH e.interests i
-//    """)
-//    List<RankableEvent> findAllRankableEvents();
-//
-
-
-//    @Query("""
-//    SELECT
-//        e.id as id,
-//        e.coordinates as coordinates,
-//        e.startTime as startTime,
-//        e.interests as interests
-//    FROM Event e
-//    WHERE startTime > CURRENT_TIMESTAMP
-//    """)
-//    List<RankableEventProjection> findAllRankableEvents();
-
-    @EntityGraph(attributePaths = {"coordinates", "interests"})
-    List<RankableEventProjection> findByStartTimeAfter(LocalDateTime time);
+    @EntityGraph(attributePaths = {"coordinates", "interests", "interests.category"})
+    List<RankableEventProjection> findByStartTimeAfterAndActiveIsTrue(LocalDateTime time);
 
 
 //    @Query("""
@@ -79,11 +39,14 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("""
         SELECT e.id as eventId,
-               i as interest
+               i as interest,
+               c as category
         FROM Event e
         LEFT JOIN e.interests i
+        LEFT JOIN FETCH i.category c
         WHERE e.id IN :eventIds
         """)
+    // todo тут чет делал может не работать
     List<EventInterestProjection> findInterestsByEventIds(@Param("eventIds") Set<Long> eventIds);
 
     @Query("""
@@ -96,6 +59,25 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @EntityGraph(attributePaths = {"participants"})
     Optional<Event> findWithParticipantsById(Long eventId);
+
+    @Query("""
+        SELECT DISTINCT e
+        FROM Event e
+        LEFT JOIN FETCH e.participants
+        LEFT JOIN FETCH e.organizer o
+        WHERE o.id = :ownerId
+        """)
+    List<Event> findByOrganizerId(Long ownerId);
+
+
+    @Query("""
+    SELECT e
+    FROM Event e
+    JOIN FETCH e.participants p
+    WHERE p.id = :userId
+""")
+    List<Event> findAllByParticipantId(Long userId);
+
     //    @SqlQuery("""
 //                SELECT e.id AS event_id,
 //                       e.start_time AS start_time,

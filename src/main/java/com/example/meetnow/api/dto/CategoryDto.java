@@ -4,10 +4,11 @@ import lombok.Builder;
 import lombok.Value;
 
 @Value
-@Builder
-public class InterestDto {
+//@Builder
+public class CategoryDto {
 
     Long id;
+
     String name;
-    CategoryDto category;
+
 }
