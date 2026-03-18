@@ -1,16 +1,16 @@
 package com.example.meetnow.service.event;
 
 import com.example.meetnow.api.dto.JoinEventRequest;
+import com.example.meetnow.api.mapper.EventShortInfo;
 import com.example.meetnow.exception.InvalidCredentialsException;
 import com.example.meetnow.exception.ResourceNotFoundException;
+import com.example.meetnow.service.action.ActionService;
+import com.example.meetnow.service.action.ActionType;
 import com.example.meetnow.service.file.FileStorageService;
 import com.example.meetnow.service.jwt.JwtService;
-import com.example.meetnow.service.model.FileResource;
+import com.example.meetnow.service.model.*;
 import com.example.meetnow.service.repository.EventRepository;
 import com.example.meetnow.service.interest.InterestService;
-import com.example.meetnow.service.model.GeoPoint;
-import com.example.meetnow.service.model.Interest;
-import com.example.meetnow.service.model.User;
 import com.example.meetnow.service.model.event.Event;
 import com.example.meetnow.service.model.event.EventCreateRequest;
 import com.example.meetnow.service.model.event.EventPreviewResponse;
@@ -19,6 +19,7 @@ import com.example.meetnow.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,10 @@ public class EventService {
     private final EventRepository eventRepository;
 
     private final FileStorageService fileStorageService;
+
+    private final ActionService actionService;
+
+    private final MessagingService messagingService;
 
     public List<EventPreviewResponse> getEventsForUser(Long userId, GeoPoint userCoordinates) {
         return eventSelectionService.getEventsForUser(userId, userCoordinates);
@@ -65,6 +70,7 @@ public class EventService {
                 .startTime(eventCreateRequest.getStartTime())
                 .active(Boolean.TRUE)
                 .coordinates(GeoPoint.builder()
+                        .address(eventCreateRequest.getCoordinates().address())
                         .latitude(eventCreateRequest.getCoordinates().latitude())
                         .longitude(eventCreateRequest.getCoordinates().longitude())
                         .build())
@@ -73,17 +79,22 @@ public class EventService {
                 .photo(image)
                 .build();
 
-        return eventRepository.save(event);
+        event = eventRepository.save(event);
+
+        messagingService.createChat(event.getId(), organizer.getId());
+
+        return event;
     }
 
+    @Transactional
     public Event updateEvent(Long eventId, EventUpdateRequest eventUpdateRequest) {
-        Event event = eventRepository.findById(eventId).orElseThrow(()
+        Event event = eventRepository.findWithAllDataById(eventId).orElseThrow(()
                 -> new ResourceNotFoundException("Event with id: " + eventId + "not found"));
 
-        // todo Проверка прав на то может ли он менять и существует ли
-        Event.EventBuilder eventBuilder = event.toBuilder()
-                .startTime(eventUpdateRequest.getStartTime())
-                .coordinates(eventUpdateRequest.getCoordinates());
+        Long userId = JwtService.getUserId();
+        if (!event.getOrganizer().getId().equals(userId)) {
+            throw new AccessDeniedException("Access denied");
+        }
 
         FileResource image;
         if (eventUpdateRequest.getImageId() != null) {
@@ -94,17 +105,23 @@ public class EventService {
 
         if (eventUpdateRequest.getInterestIds() != null && !eventUpdateRequest.getInterestIds().isEmpty()) {
             Set<Interest> interests = interestService.getInterestsFromIds(eventUpdateRequest.getInterestIds());
-            eventBuilder.interests(interests);
+            event.setInterests(interests);
         }
 
-        eventBuilder.photo(image);
+        event.setTitle(eventUpdateRequest.getTitle());
+        event.setDescription(eventUpdateRequest.getDescription());
+        event.setStartTime(eventUpdateRequest.getDate());
+        event.setPhoto(image);
 
-        return eventRepository.save(eventBuilder.build());
+        return eventRepository.save(event);
     }
 
     public Event getEvent(Long eventId) {
-        return eventRepository.findWithAllDataById(eventId).orElseThrow(()
+        Event event = eventRepository.findWithAllDataById(eventId).orElseThrow(()
                 -> new ResourceNotFoundException("Event with id: " + eventId + "not found"));
+
+        saveUserAction(eventId, ActionType.VIEW);
+        return event;
     }
 
     @Transactional
@@ -113,7 +130,8 @@ public class EventService {
         Event event = eventRepository.findWithAllDataById(eventId).orElseThrow(()
                 -> new ResourceNotFoundException("Event with id: " + eventId + "not found"));
 
-        User user = userService.getUser(JwtService.getUserId());
+        Long userId = JwtService.getUserId();
+        User user = userService.getUser(userId);
 
         Set<User> participants = event.getParticipants();
 
@@ -122,8 +140,23 @@ public class EventService {
         event.setParticipants(participants);
 
         eventRepository.save(event);
+        saveUserAction(eventId, com.example.meetnow.service.action.ActionType.ATTEND);
 
+        messagingService.addParticipantInChat(eventId, userId);
         return event;
+    }
+
+    private void saveUserAction(Long eventId, com.example.meetnow.service.action.ActionType actionType) {
+        Long userId = JwtService.getUserId();
+
+        UserActionLog action = UserActionLog.builder()
+                .userId(userId)
+                .eventId(eventId)
+                .actionTime(LocalDateTime.now())
+                .actionType(actionType)
+                .build();
+
+        actionService.save(action);
     }
 
     // Эвенты которые создал пользователь
@@ -171,5 +204,20 @@ public class EventService {
 
         event.setActive(Boolean.FALSE);
         eventRepository.save(event);
+    }
+
+    public void share(Long eventId) {
+        saveUserAction(eventId, ActionType.SHARE);
+    }
+
+    @Transactional
+    public List<EventShortInfo> getEventShortInfo(List<Long> eventIds) {
+        return eventRepository.findAllById(eventIds).stream().map(event ->
+                EventShortInfo.builder()
+                        .title(event.getTitle())
+                        .eventId(event.getId())
+                        .eventDate(event.getStartTime())
+                        .imageUrl(event.getPhoto() != null ? event.getPhoto().getPath() : null)
+                        .build()).toList();
     }
 }

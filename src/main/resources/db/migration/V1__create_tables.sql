@@ -34,6 +34,7 @@ CREATE TABLE user_interest (
 
 CREATE TABLE geo_point (
        id        SERIAL PRIMARY KEY,
+        address  VARCHAR,
        latitude  DOUBLE PRECISION NOT NULL,
        longitude DOUBLE PRECISION NOT NULL
 );

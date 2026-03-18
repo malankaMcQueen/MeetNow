@@ -4,6 +4,7 @@ import com.example.meetnow.api.dto.EventParticipantsResponse;
 import com.example.meetnow.api.dto.EventResponse;
 import com.example.meetnow.api.dto.JoinEventRequest;
 import com.example.meetnow.api.mapper.EventMapper;
+import com.example.meetnow.api.mapper.EventShortInfo;
 import com.example.meetnow.service.event.EventService;
 import com.example.meetnow.service.model.GeoPoint;
 import com.example.meetnow.service.model.event.Event;
@@ -41,7 +42,7 @@ public class EventController {
             @RequestParam Double lon) {
         log.info("Start GET /event/recommendations/{}. Request: lat = {}, lon = {}", userId, lat, lon);
 
-        List<EventPreviewResponse> eventsPreviewResponse = eventService.getEventsForUser(userId, new GeoPoint(null, lat, lon));
+        List<EventPreviewResponse> eventsPreviewResponse = eventService.getEventsForUser(userId, new GeoPoint(null, null, lat, lon));
 
         log.info("End GET /event/recommendations/{}. Response = {}", userId, eventsPreviewResponse);
         return eventsPreviewResponse;
@@ -56,9 +57,9 @@ public class EventController {
     }
 
     @PutMapping("/{eventId}")
-    public Event updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest eventUpdateRequest) {
+    public EventResponse updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest eventUpdateRequest) {
         log.info("Start PUT /event/{} Request: {}", eventId, eventUpdateRequest);
-        Event event = eventService.updateEvent(eventId, eventUpdateRequest);
+        EventResponse event = EventMapper.mapToEventResponse(eventService.updateEvent(eventId, eventUpdateRequest));
         log.info("End PUT /event/{} Response: {}", eventId, event);
         return event;
     }
@@ -104,4 +105,21 @@ public class EventController {
         log.info("End GET /event/joined. Response = {}", events);
         return events;
     }
+
+    @PostMapping("/{eventId}/share")
+    public void shareEvent(@PathVariable Long eventId) {
+        log.info("Start POST /event/{}/share", eventId);
+        eventService.share(eventId);
+        log.info("End POST /event/{}/share", eventId);
+        return;
+    }
+
+    @PostMapping("/shortInfo")
+    public List<EventShortInfo> eventShortInfoList(@RequestBody List<Long> eventIds) {
+        log.info("Start POST /event/shortInfo. Request: {}", eventIds);
+        List<EventShortInfo> events = eventService.getEventShortInfo(eventIds);
+        log.info("End POST /event/shortInfo. Response: {}", events);
+        return events;
+    }
+
 }

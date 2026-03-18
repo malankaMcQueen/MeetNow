@@ -1,4 +1,4 @@
-package com.example.meetnow.configuration;
+package com.example.meetnow.configuration.securitu;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

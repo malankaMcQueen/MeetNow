@@ -27,12 +27,12 @@ public final class EventMapper {
                 .title(event.getTitle())
                 .description(event.getDescription())
                 .startTime(event.getStartTime())
-                .coordinates(new GeoPointDto(event.getCoordinates().getLatitude(), event.getCoordinates().getLongitude()))
+                .coordinates(new GeoPointDto(event.getCoordinates().getAddress(), event.getCoordinates().getLatitude(), event.getCoordinates().getLongitude()))
                 .participants(mapSetOfUser(event.getParticipants()))
                 .organizer(mapUser(event.getOrganizer()))
                 .participantsCount(event.getParticipants().size())
                 .interests(mapInterests(event.getInterests()))
-                .imageUrl(event.getPhoto().getPath())
+                .imageUrl(event.getPhoto() != null ? event.getPhoto().getPath() : null)
                 .build();
     }
 

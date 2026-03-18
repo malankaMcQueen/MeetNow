@@ -1,4 +1,4 @@
-package com.example.meetnow.configuration;
+package com.example.meetnow.configuration.securitu;
 
 import com.example.meetnow.service.jwt.JwtService;
 import io.jsonwebtoken.io.IOException;

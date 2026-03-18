@@ -15,12 +15,15 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)  // для JPA
 @Builder(toBuilder = true)
 @ToString
-public class GeoPoint {
+public class  GeoPoint {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "address")
+    private String address;
 
     @Column(name = "latitude")
     private Double latitude;

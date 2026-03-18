@@ -10,4 +10,8 @@ import java.util.Set;
 public interface UserActionRepository extends JpaRepository<UserAction, Long> {
 
     Set<UserAction> findAllByUserId(Long userId);
+
+//    int findByUserIdAndEventIdAndActionId(Long userId, Long eventId, int id);
+
+    int countByUserIdAndEventIdAndActionTypeId(Long userId, Long eventId, int id);
 }
